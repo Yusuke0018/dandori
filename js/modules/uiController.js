@@ -27,12 +27,6 @@ export class UIController {
             btn.classList.toggle('active', active);
             btn.setAttribute('aria-current', active ? 'page' : 'false');
         });
-        // Update bottom nav
-        document.querySelectorAll('.bottom-tab').forEach(btn => {
-            const active = btn.dataset.view === viewName;
-            btn.classList.toggle('active', active);
-            btn.setAttribute('aria-current', active ? 'page' : 'false');
-        });
         
         // Update active view
         document.querySelectorAll('.view-container').forEach(view => {

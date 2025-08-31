@@ -3,7 +3,6 @@ import { TaskManager } from './modules/taskManager.js';
 import { StorageService } from './modules/storage.js';
 import { UIController } from './modules/uiController.js';
 import { Router } from './modules/router.js';
-import { PanelController } from './modules/panelController.js';
 import { DragDropController } from './modules/dragDropController.js';
 
 class DandoriApp {
@@ -12,7 +11,7 @@ class DandoriApp {
         this.taskManager = new TaskManager(this.storage);
         this.uiController = new UIController(this.taskManager);
         this.router = new Router(this.uiController);
-        this.panelController = new PanelController(this.router);
+        // 左トグルは廃止
         this.dragDropController = new DragDropController(this.taskManager, this.uiController);
         
         this.init();
@@ -55,13 +54,8 @@ class DandoriApp {
                 this.router.navigateTo(view);
             });
         });
-        // Bottom nav
-        document.querySelectorAll('.bottom-tab').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const view = e.currentTarget.dataset.view;
-                this.router.navigateTo(view);
-            });
-        });
+        // Swipe navigation among top tabs
+        this.initSwipeNavigation();
         
         // Modal events
         const modal = document.getElementById('task-modal');
@@ -178,6 +172,34 @@ class DandoriApp {
         }
         
         return true;
+    }
+
+    initSwipeNavigation() {
+        const container = document.querySelector('.app-main');
+        if (!container) return;
+        let sx = 0, sy = 0, dx = 0, dy = 0, active = false;
+        const threshold = 60;
+        const views = ['timeline','calendar','board','projects','completed'];
+        const onStart = (x, y) => { sx = x; sy = y; dx = dy = 0; active = true; };
+        const onMove = (x, y) => { if (!active) return; dx = x - sx; dy = y - sy; };
+        const onEnd = () => {
+            if (!active) return; active = false;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
+                const cur = this.uiController.currentView;
+                const idx = views.indexOf(cur);
+                if (idx !== -1) {
+                    const next = dx < 0 ? Math.min(idx + 1, views.length - 1) : Math.max(idx - 1, 0);
+                    if (next !== idx) this.router.navigateTo(views[next]);
+                }
+            }
+        };
+        container.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        container.addEventListener('touchmove', e => onMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        container.addEventListener('touchend', onEnd, { passive: true });
+        container.addEventListener('pointerdown', e => onStart(e.clientX, e.clientY));
+        container.addEventListener('pointermove', e => onMove(e.clientX, e.clientY));
+        container.addEventListener('pointerup', onEnd);
+        container.addEventListener('pointercancel', ()=> active=false);
     }
 
     handleProjectSubmit() {
