@@ -126,6 +126,30 @@ export class TaskManager {
         
         return project;
     }
+
+    // Update project
+    updateProject(projectId, updates) {
+        const idx = this.data.projects.findIndex(p => p.id === projectId);
+        if (idx === -1) return null;
+        const project = { ...this.data.projects[idx], ...updates };
+        this.data.projects[idx] = project;
+        this.save();
+        return project;
+    }
+
+    // Delete project and reassign tasks to default
+    deleteProject(projectId) {
+        if (projectId === 'default') return false;
+        const idx = this.data.projects.findIndex(p => p.id === projectId);
+        if (idx === -1) return false;
+        this.data.projects.splice(idx, 1);
+        // Reassign tasks
+        this.data.tasks = this.data.tasks.map(t => (
+            t.projectId === projectId ? { ...t, projectId: 'default' } : t
+        ));
+        this.save();
+        return true;
+    }
     
     // Get all projects with progress
     getProjectsWithProgress() {

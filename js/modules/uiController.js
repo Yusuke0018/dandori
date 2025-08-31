@@ -5,6 +5,7 @@ export class UIController {
         this.currentView = 'timeline';
         this.currentDate = new Date();
         this.editingTaskId = null;
+        this.editingProjectId = null;
         this.lastDeletedTask = null;
         this.undoTimer = null;
     }
@@ -407,6 +408,7 @@ export class UIController {
 
         projects.forEach(project => {
             const card = this.createProjectCard(project);
+            card.addEventListener('click', () => this.openProjectModal(project));
             container.appendChild(card);
         });
     }
@@ -529,6 +531,56 @@ export class UIController {
         document.getElementById('task-modal').hidden = true;
         document.getElementById('task-form').reset();
         this.editingTaskId = null;
+    }
+
+    // Project modal
+    openProjectModal(project = null) {
+        const modal = document.getElementById('project-modal');
+        const form = document.getElementById('project-form');
+        const delBtn = modal.querySelector('.btn-project-delete');
+        if (project) {
+            this.editingProjectId = project.id;
+            modal.querySelector('.project-modal-title').textContent = 'プロジェクトを編集';
+            document.getElementById('project-name').value = project.name;
+            document.getElementById('project-color').value = project.color;
+            document.getElementById('project-deadline').value = project.deadline || '';
+            delBtn.hidden = project.id === 'default';
+        } else {
+            this.editingProjectId = null;
+            modal.querySelector('.project-modal-title').textContent = 'プロジェクトを追加';
+            form.reset();
+            delBtn.hidden = true;
+        }
+        modal.hidden = false;
+    }
+
+    closeProjectModal() {
+        const modal = document.getElementById('project-modal');
+        modal.hidden = true;
+        document.getElementById('project-form').reset();
+        this.editingProjectId = null;
+    }
+
+    // Simple toast
+    showToast(message) {
+        const existing = document.getElementById('simple-toast');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.id = 'simple-toast';
+        toast.style.position = 'fixed';
+        toast.style.left = '50%';
+        toast.style.bottom = '72px';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'var(--color-text)';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 14px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.15)';
+        toast.style.zIndex = '1003';
+        toast.style.fontSize = '14px';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(()=> toast.remove(), 1800);
     }
     
     // Select task type in modal

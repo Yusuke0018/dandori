@@ -253,6 +253,45 @@
                 </form>
             </div>
         </div>
+
+        <!-- Project Editor Modal -->
+        <div id="project-modal" class="modal" hidden>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="project-modal-title">プロジェクトを追加</h3>
+                    <button class="project-modal-close" aria-label="閉じる">×</button>
+                </div>
+                <form id="project-form" class="task-form">
+                    <div class="form-group">
+                        <label for="project-name">プロジェクト名</label>
+                        <input type="text" id="project-name" required placeholder="例）健康、仕事、学習">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-color">色</label>
+                        <select id="project-color">
+                            <option value="blue">青</option>
+                            <option value="green">緑</option>
+                            <option value="orange">橙</option>
+                            <option value="red">赤</option>
+                            <option value="purple">紫</option>
+                            <option value="teal">青緑</option>
+                            <option value="pink">桃</option>
+                            <option value="gray">灰</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-deadline">期限（任意）</label>
+                        <input type="date" id="project-deadline">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-danger btn-project-delete" hidden>削除</button>
+                        <div style="flex:1"></div>
+                        <button type="button" class="btn btn-cancel project-cancel">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

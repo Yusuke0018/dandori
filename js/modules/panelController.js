@@ -214,8 +214,10 @@ export class PanelController {
             const tm = window.app?.taskManager;
             if (tm) {
                 const dateStr = tm.formatDate(cellDate);
-                const has = tm.data.tasks.some(t => !t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
-                if (has) btn.classList.add('has-tasks');
+                const hasOpen = tm.data.tasks.some(t => !t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
+                const hasDone = tm.data.tasks.some(t => t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
+                if (hasOpen) btn.classList.add('has-tasks');
+                if (hasDone) btn.classList.add('has-done');
             }
 
             btn.addEventListener('click', () => {
@@ -246,7 +248,7 @@ export class PanelController {
         const tm = window.app?.taskManager;
         if (!tm) return;
         const dateStr = tm.formatDate(date);
-        const tasks = tm.data.tasks.filter(t => (t.type==='day'||t.type==='timed') && t.date === dateStr && !t.done)
+        const tasks = tm.data.tasks.filter(t => (t.type==='day'||t.type==='timed') && t.date === dateStr)
             .sort((a,b) => (a.startMin||9999) - (b.startMin||9999));
         if (tasks.length === 0) {
             const empty = document.createElement('div');
@@ -258,19 +260,27 @@ export class PanelController {
         tasks.forEach(t => {
             const row = document.createElement('div');
             row.className = 'calendar-task-item';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = !!t.done;
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                tm.toggleTaskDone(t.id);
+                this.renderTasksForDate(date);
+                window.app.uiController.updateProgressRing();
+            });
             const time = document.createElement('div');
             time.className = 'calendar-task-time';
             time.textContent = t.type==='timed' ? `${tm.minutesToTime(t.startMin)}` : '';
             const title = document.createElement('div');
             title.className = 'calendar-task-title';
             title.textContent = t.title;
+            row.appendChild(checkbox);
             row.appendChild(time);
             row.appendChild(title);
             row.addEventListener('click', () => {
-                window.app.uiController.currentDate = new Date(date);
-                window.app.uiController.updateDateHeader();
-                window.app.router.navigateTo('timeline');
-                setTimeout(() => this.close(), 150);
+                const task = tm.data.tasks.find(x => x.id === t.id);
+                if (task) window.app.uiController.openTaskModal(task);
             });
             container.appendChild(row);
         });

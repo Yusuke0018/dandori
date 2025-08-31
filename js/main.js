@@ -42,13 +42,7 @@ class DandoriApp {
         // Add button: tasks by default, projects when in projects view
         document.querySelector('.btn-add').addEventListener('click', () => {
             if (this.uiController.currentView === 'projects') {
-                const name = window.prompt('プロジェクト名を入力してください');
-                if (!name || !name.trim()) return;
-                const colors = ['blue','green','orange','red','purple','teal','pink','gray'];
-                const colorInput = window.prompt(`色を選択してください:\n${colors.join(', ')}`, 'blue');
-                const color = colors.includes((colorInput || '').trim()) ? colorInput.trim() : 'blue';
-                this.taskManager.createProject({ name: name.trim(), color });
-                this.uiController.renderCurrentView();
+                this.uiController.openProjectModal();
             } else {
                 this.uiController.openTaskModal();
             }
@@ -104,6 +98,29 @@ class DandoriApp {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleTaskSubmit();
+        });
+
+        // Project modal events
+        const pModal = document.getElementById('project-modal');
+        const pClose = pModal.querySelector('.project-modal-close');
+        const pCancel = pModal.querySelector('.project-cancel');
+        const pForm = document.getElementById('project-form');
+        const pDelete = pModal.querySelector('.btn-project-delete');
+        pClose.addEventListener('click', () => this.uiController.closeProjectModal());
+        pCancel.addEventListener('click', () => this.uiController.closeProjectModal());
+        pModal.addEventListener('click', (e) => { if (e.target === pModal) this.uiController.closeProjectModal(); });
+        pForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleProjectSubmit();
+        });
+        pDelete.addEventListener('click', () => {
+            const id = this.uiController.editingProjectId;
+            if (id && confirm('このプロジェクトを削除しますか？（タスクは"個人タスク"に移動）')) {
+                this.taskManager.deleteProject(id);
+                this.uiController.closeProjectModal();
+                this.uiController.renderCurrentView();
+                this.uiController.showToast('削除しました');
+            }
         });
         
         // Date navigation
@@ -170,7 +187,23 @@ class DandoriApp {
         
         return true;
     }
-    
+
+    handleProjectSubmit() {
+        const name = document.getElementById('project-name').value.trim();
+        const color = document.getElementById('project-color').value;
+        const deadline = document.getElementById('project-deadline').value || null;
+        if (!name) { alert('プロジェクト名を入力してください'); return; }
+        if (this.uiController.editingProjectId) {
+            this.taskManager.updateProject(this.uiController.editingProjectId, { name, color, deadline });
+            this.uiController.showToast('更新しました');
+        } else {
+            this.taskManager.createProject({ name, color, deadline });
+            this.uiController.showToast('作成しました');
+        }
+        this.uiController.closeProjectModal();
+        this.uiController.renderCurrentView();
+    }
+
     updateTimeIndicator() {
         const now = new Date();
         const minutes = now.getHours() * 60 + now.getMinutes();

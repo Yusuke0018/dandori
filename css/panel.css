@@ -239,6 +239,17 @@
     border-radius: var(--radius-pill);
 }
 
+.cal-day.has-done::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: calc(50% + 6px);
+    width: 4px;
+    height: 4px;
+    background: var(--color-success);
+    border-radius: var(--radius-pill);
+}
+
 /* Calendar selected day's tasks list */
 .calendar-tasks {
     margin-top: var(--spacing-md);
