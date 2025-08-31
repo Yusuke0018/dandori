@@ -3,6 +3,8 @@ import { TaskManager } from './modules/taskManager.js';
 import { StorageService } from './modules/storage.js';
 import { UIController } from './modules/uiController.js';
 import { Router } from './modules/router.js';
+import { PanelController } from './modules/panelController.js';
+import { DragDropController } from './modules/dragDropController.js';
 
 class DandoriApp {
     constructor() {
@@ -10,6 +12,8 @@ class DandoriApp {
         this.taskManager = new TaskManager(this.storage);
         this.uiController = new UIController(this.taskManager);
         this.router = new Router(this.uiController);
+        this.panelController = new PanelController(this.router);
+        this.dragDropController = new DragDropController(this.taskManager, this.uiController);
         
         this.init();
     }

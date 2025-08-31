@@ -25,13 +25,75 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/views.css">
+    <link rel="stylesheet" href="css/panel.css">
 </head>
 <body>
     <div id="app">
+        <!-- Left Toggle Panel -->
+        <div id="toggle-panel" class="toggle-panel">
+            <div class="panel-content">
+                <nav class="panel-nav">
+                    <button class="panel-item active" data-view="today">
+                        <span class="panel-icon">📅</span>
+                        <span class="panel-label">今日</span>
+                        <span class="panel-badge">3</span>
+                    </button>
+                    <button class="panel-item" data-view="calendar">
+                        <span class="panel-icon">📆</span>
+                        <span class="panel-label">カレンダー</span>
+                    </button>
+                    <button class="panel-item" data-view="someday">
+                        <span class="panel-icon">💭</span>
+                        <span class="panel-label">いつか</span>
+                        <span class="panel-badge">5</span>
+                    </button>
+                    <button class="panel-item" data-view="projects">
+                        <span class="panel-icon">📁</span>
+                        <span class="panel-label">プロジェクト</span>
+                        <span class="panel-badge">2</span>
+                    </button>
+                    <button class="panel-item" data-view="completed">
+                        <span class="panel-icon">✅</span>
+                        <span class="panel-label">完了履歴</span>
+                    </button>
+                </nav>
+                
+                <!-- Mini Calendar -->
+                <div class="mini-calendar" hidden>
+                    <div class="calendar-header">
+                        <button class="cal-nav prev">‹</button>
+                        <span class="cal-month">2024年12月</span>
+                        <button class="cal-nav next">›</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <!-- Calendar days will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel Toggle Tab -->
+        <button id="panel-tab" class="panel-tab" aria-label="メニュー">
+            <span class="tab-icon">☰</span>
+        </button>
+        
+        <!-- Panel Backdrop -->
+        <div id="panel-backdrop" class="panel-backdrop" hidden></div>
+        
         <!-- Header -->
         <header class="app-header">
             <div class="header-content">
-                <h1 class="app-title">ダンドリ</h1>
+                <div class="header-left">
+                    <h1 class="app-title">ダンドリ</h1>
+                    <div class="progress-ring-container">
+                        <svg class="progress-ring" width="36" height="36">
+                            <circle class="progress-ring-bg" cx="18" cy="18" r="15" stroke-width="3" fill="none"/>
+                            <circle class="progress-ring-fill" cx="18" cy="18" r="15" stroke-width="3" fill="none"
+                                    stroke-dasharray="94.2" stroke-dashoffset="94.2"/>
+                        </svg>
+                        <span class="progress-text">0%</span>
+                    </div>
+                </div>
                 <button class="btn-add" aria-label="タスク追加">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>

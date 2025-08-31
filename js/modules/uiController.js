@@ -10,6 +10,7 @@ export class UIController {
     init() {
         this.renderCurrentView();
         this.updateDateHeader();
+        this.updateProgressRing();
         this.populateProjects();
         this.initTimeLabels();
     }
@@ -353,5 +354,37 @@ export class UIController {
     // Add task to current view
     addTaskToView(task) {
         this.renderCurrentView();
+        this.updateProgressRing();
+    }
+    
+    // Update progress ring
+    updateProgressRing() {
+        const today = this.taskManager.formatDate(new Date());
+        const todayTasks = this.taskManager.data.tasks.filter(t => 
+            (t.type === 'day' || t.type === 'timed') && 
+            t.date === today
+        );
+        
+        const completedTasks = todayTasks.filter(t => t.done);
+        const progress = todayTasks.length > 0 
+            ? Math.round((completedTasks.length / todayTasks.length) * 100)
+            : 0;
+        
+        // Update ring
+        const ring = document.querySelector('.progress-ring-fill');
+        const text = document.querySelector('.progress-text');
+        
+        if (ring && text) {
+            const circumference = 2 * Math.PI * 15; // radius = 15
+            const offset = circumference - (progress / 100) * circumference;
+            
+            ring.style.strokeDashoffset = offset;
+            text.textContent = `${progress}%`;
+        }
+        
+        // Update panel badges
+        if (window.app?.panelController) {
+            window.app.panelController.updateBadges();
+        }
     }
 }

@@ -1,0 +1,304 @@
+/* Toggle Panel Styles */
+
+/* Panel Tab (突起) */
+.panel-tab {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 80px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: none;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-sticky);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+    opacity: 0.8;
+}
+
+.panel-tab:hover {
+    opacity: 1;
+    width: 32px;
+    box-shadow: var(--shadow-md);
+}
+
+.panel-tab.active {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tab-icon {
+    font-size: 18px;
+    color: var(--color-text-secondary);
+}
+
+/* Toggle Panel */
+.toggle-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    z-index: var(--z-modal);
+    box-shadow: var(--shadow-xl);
+}
+
+.toggle-panel.open {
+    transform: translateX(0);
+}
+
+.panel-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg) 0;
+}
+
+/* Panel Navigation */
+.panel-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: 0 var(--spacing-md);
+}
+
+.panel-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.panel-item:hover {
+    background: var(--color-surface-hover);
+}
+
+.panel-item.active {
+    background: var(--color-primary-alpha);
+    color: var(--color-primary);
+}
+
+.panel-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    background: var(--color-primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.panel-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+}
+
+.panel-label {
+    flex: 1;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.panel-badge {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-pill);
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Mini Calendar */
+.mini-calendar {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-light);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.cal-month {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.cal-nav {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.cal-nav:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.cal-day:hover {
+    background: var(--color-surface-hover);
+}
+
+.cal-day.today {
+    background: var(--color-primary-alpha);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.cal-day.selected {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.cal-day.has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--color-primary);
+    border-radius: var(--radius-pill);
+}
+
+/* Panel Backdrop */
+.panel-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: calc(var(--z-modal) - 1);
+    transition: opacity var(--transition-fast);
+}
+
+.panel-backdrop[hidden] {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.panel-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Progress Ring */
+.progress-ring-container {
+    position: relative;
+    width: 36px;
+    height: 36px;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+    stroke: var(--color-border);
+}
+
+.progress-ring-fill {
+    stroke: var(--color-primary);
+    transition: stroke-dashoffset var(--transition-slow);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Swipe Gestures Support */
+.task-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.swipe-actions {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-md);
+    transition: transform var(--transition-base);
+}
+
+.swipe-left {
+    left: 0;
+    background: var(--color-primary);
+    transform: translateX(-100%);
+}
+
+.swipe-right {
+    right: 0;
+    background: var(--color-error);
+    transform: translateX(100%);
+}
+
+.task-card.swiping-left .swipe-left {
+    transform: translateX(0);
+}
+
+.task-card.swiping-right .swipe-right {
+    transform: translateX(0);
+}
+
+.swipe-icon {
+    color: var(--color-text-inverse);
+    font-size: 20px;
+}
