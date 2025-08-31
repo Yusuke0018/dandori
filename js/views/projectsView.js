@@ -7,8 +7,11 @@ function el(tag, attrs={}, ...children){
   return e;
 }
 
+import { showProjectModal } from '../components/projectModal.js';
+
 export function mountProjects(container, { getProjects, getAllTasks }){
-  const header = el('div',{class:'header'}, el('div',{class:'date'}, 'プロジェクト一覧'));
+  const addBtn = el('button',{class:'btn primary', onclick:()=> showProjectModal({ mode:'create' }) }, '新規');
+  const header = el('div',{class:'header'}, el('div',{class:'date'}, 'プロジェクト一覧'), el('div',{class:'spacer'}), addBtn);
   const list = el('div',{class:'projects'});
   container.appendChild(header);
   container.appendChild(list);
@@ -30,8 +33,7 @@ export function mountProjects(container, { getProjects, getAllTasks }){
     const tag = el('span',{class:'tag-pill', 'data-color':p.color}, p.name.slice(0,2));
     const bar = el('div',{class:'prog-bar'}, el('div',{class:'prog-fill', style:{width:`${pct}%`}}, `${pct}%`));
     const meta = el('div',{class:'muted', style:{fontSize:'12px'}}, `${done}/${total}`);
-    const card = el('div',{class:'project-card', 'data-color':p.color}, el('div',{class:'row top'}, tag, meta), name, bar);
+    const card = el('div',{class:'project-card', 'data-color':p.color, onclick:()=> showProjectModal({ mode:'edit', project:p }) }, el('div',{class:'row top'}, tag, meta), name, bar);
     list.appendChild(card);
   }
 }
-

@@ -99,3 +99,20 @@ export function updateSettings(patch){ Object.assign(cache.settings, patch); com
 export function hasOverlapOn(date, startMin, endMin, excludeId){
   return cache.tasks.some(t=> t.type==='timed' && t.date===date && t.id!==excludeId && Math.max(t.startMin, startMin) < Math.min(t.endMin, endMin));
 }
+
+// Projects CRUD
+export function createProject({ name, color='theme/pastel/blue', memo='', deadline='' }){
+  const now = Date.now();
+  const p = { id: uuid(), name, color, memo, deadline, createdAt:now, updatedAt:now };
+  cache.projects.push(p); commit(); return p;
+}
+
+export function updateProject(id, patch){
+  const p = cache.projects.find(x=>x.id===id); if(!p) return;
+  Object.assign(p, patch); p.updatedAt=Date.now(); commit();
+}
+
+export function deleteProject(id){
+  const idx = cache.projects.findIndex(x=>x.id===id);
+  if(idx>=0){ cache.projects.splice(idx,1); commit(); }
+}

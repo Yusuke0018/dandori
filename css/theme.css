@@ -4,9 +4,33 @@
 .danger{color:var(--danger)}
 .shadow{box-shadow:var(--shadow)}
 
-/* 色テーマの一例（簡易） */
+/* 色テーマ（原色= vivid / パステル / ダーク）各8色 */
+/* pastel */
 [data-color="theme/pastel/blue"]{--accent:#84b6ff}
 [data-color="theme/pastel/green"]{--accent:#91e8b0}
 [data-color="theme/pastel/pink"]{--accent:#ffb0cc}
 [data-color="theme/pastel/yellow"]{--accent:#ffe08a}
+[data-color="theme/pastel/purple"]{--accent:#c6a6ff}
+[data-color="theme/pastel/orange"]{--accent:#ffc58a}
+[data-color="theme/pastel/teal"]{--accent:#8fe5de}
+[data-color="theme/pastel/gray"]{--accent:#c6d0e8}
 
+/* vivid */
+[data-color="theme/vivid/blue"]{--accent:#2d7dff}
+[data-color="theme/vivid/green"]{--accent:#11c46a}
+[data-color="theme/vivid/pink"]{--accent:#ff3da8}
+[data-color="theme/vivid/yellow"]{--accent:#ffd400}
+[data-color="theme/vivid/purple"]{--accent:#8c5bff}
+[data-color="theme/vivid/orange"]{--accent:#ff8a1a}
+[data-color="theme/vivid/red"]{--accent:#ff3b30}
+[data-color="theme/vivid/teal"]{--accent:#00c2ad}
+
+/* dark */
+[data-color="theme/dark/blue"]{--accent:#5b79ff}
+[data-color="theme/dark/green"]{--accent:#3cd48b}
+[data-color="theme/dark/pink"]{--accent:#ff6fad}
+[data-color="theme/dark/yellow"]{--accent:#f7c948}
+[data-color="theme/dark/purple"]{--accent:#a07cff}
+[data-color="theme/dark/orange"]{--accent:#ff9a3c}
+[data-color="theme/dark/teal"]{--accent:#2fd6c7}
+[data-color="theme/dark/gray"]{--accent:#a7b3cc}
