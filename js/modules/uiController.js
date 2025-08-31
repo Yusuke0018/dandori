@@ -221,10 +221,25 @@ export class UIController {
         });
         card.appendChild(checkbox);
         
-        // Click to edit
-        card.addEventListener('click', () => {
-            this.openTaskModal(task);
-        });
+        // Long-press to delete / click to edit
+        let lpTimer = null;
+        let lpTriggered = false;
+        let sx = 0, sy = 0;
+        const LP_MS = 600;
+        const startLP = (x, y) => {
+            lpTriggered = false; sx = x; sy = y;
+            clearTimeout(lpTimer);
+            lpTimer = setTimeout(() => { lpTriggered = true; this.confirmDeleteTask(task.id); }, LP_MS);
+        };
+        const cancelLP = () => { clearTimeout(lpTimer); };
+        card.addEventListener('pointerdown', (e)=> startLP(e.clientX, e.clientY));
+        card.addEventListener('pointermove', (e)=> { if (Math.hypot(e.clientX-sx, e.clientY-sy) > 10) cancelLP(); });
+        card.addEventListener('pointerup', cancelLP);
+        card.addEventListener('pointerleave', cancelLP);
+        card.addEventListener('pointercancel', cancelLP);
+
+        // Click to edit (ignore if long-press)
+        card.addEventListener('click', () => { if (!lpTriggered) this.openTaskModal(task); });
 
         // Swipe gestures (touch): left=edit, right=delete with undo
         this.attachSwipeHandlers(card, task);
@@ -369,6 +384,13 @@ export class UIController {
         toast.appendChild(btn);
         document.body.appendChild(toast);
     }
+
+    confirmDeleteTask(taskId) {
+        const t = this.taskManager.data.tasks.find(x => x.id === taskId);
+        if (!t) return;
+        if (!confirm('このタスクを削除しますか？')) return;
+        this.deleteTaskWithUndo(taskId);
+    }
     
     // Create timeline task element
     createTimelineTask(task, column) {
@@ -429,7 +451,6 @@ export class UIController {
 
         projects.forEach(project => {
             const card = this.createProjectCard(project);
-            card.addEventListener('click', () => this.openProjectModal(project));
             container.appendChild(card);
         });
     }
@@ -461,7 +482,15 @@ export class UIController {
                 </div>
             </div>
         `;
-        
+        // Long-press delete / click edit
+        let lpTimer = null; let lpTriggered = false; const LP_MS = 600;
+        card.addEventListener('pointerdown', () => { lpTriggered=false; clearTimeout(lpTimer); lpTimer = setTimeout(()=>{ lpTriggered=true; this.confirmDeleteProject(project.id); }, LP_MS); });
+        const cancel = ()=> clearTimeout(lpTimer);
+        card.addEventListener('pointerup', cancel);
+        card.addEventListener('pointerleave', cancel);
+        card.addEventListener('pointercancel', cancel);
+        card.addEventListener('click', ()=> { if (!lpTriggered) this.openProjectModal(project); });
+
         return card;
     }
 
@@ -707,6 +736,17 @@ export class UIController {
         modal.hidden = true;
         document.getElementById('project-form').reset();
         this.editingProjectId = null;
+    }
+
+    confirmDeleteProject(projectId) {
+        if (projectId === 'default') { alert('既定のプロジェクトは削除できません'); return; }
+        const p = this.taskManager.data.projects.find(x => x.id === projectId);
+        if (!p) return;
+        if (!confirm(`プロジェクト「${p.name}」を削除しますか？\n所属タスクは「個人タスク」に移動します。`)) return;
+        if (this.taskManager.deleteProject(projectId)) {
+            this.renderProjectsView();
+            this.showToast('削除しました');
+        }
     }
 
     // Simple toast
