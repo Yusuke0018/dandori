@@ -125,12 +125,13 @@
     position: relative;
     user-select: none;
     border-left: 4px solid var(--color-primary);
-    background-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(74,144,226,0.06) 100%);
+    background-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(74,144,226,0.06) 100%),
+                      radial-gradient(120% 60% at 100% 0%, rgba(255,138,61,0.08), transparent 60%);
 }
 
 .task-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px) scale(1.01);
 }
 
 .task-card.dragging {
@@ -192,43 +193,43 @@
 }
 
 .project-tag[data-color="blue"] {
-    background: var(--color-project-blue-alpha);
-    color: var(--color-project-blue);
+    background: linear-gradient(135deg, #8bc6ff 0%, #4A90E2 100%);
+    color: #0f3b70;
 }
 
 .project-tag[data-color="green"] {
-    background: var(--color-project-green-alpha);
-    color: var(--color-project-green);
+    background: linear-gradient(135deg, #b9f5a1 0%, #52C41A 100%);
+    color: #1c5f00;
 }
 
 .project-tag[data-color="orange"] {
-    background: var(--color-project-orange-alpha);
-    color: var(--color-project-orange);
+    background: linear-gradient(135deg, #ffd0a6 0%, #FA8C16 100%);
+    color: #7a3f00;
 }
 
 .project-tag[data-color="red"] {
-    background: var(--color-project-red-alpha);
-    color: var(--color-project-red);
+    background: linear-gradient(135deg, #ffb3b3 0%, #F5222D 100%);
+    color: #7a0c12;
 }
 
 .project-tag[data-color="purple"] {
-    background: var(--color-project-purple-alpha);
-    color: var(--color-project-purple);
+    background: linear-gradient(135deg, #d9b3ff 0%, #722ED1 100%);
+    color: #3d0f7a;
 }
 
 .project-tag[data-color="teal"] {
-    background: var(--color-project-teal-alpha);
-    color: var(--color-project-teal);
+    background: linear-gradient(135deg, #b7f1f1 0%, #13C2C2 100%);
+    color: #0a5a5a;
 }
 
 .project-tag[data-color="pink"] {
-    background: var(--color-project-pink-alpha);
-    color: var(--color-project-pink);
+    background: linear-gradient(135deg, #ffc0de 0%, #EB2F96 100%);
+    color: #771247;
 }
 
 .project-tag[data-color="gray"] {
-    background: var(--color-project-gray-alpha);
-    color: var(--color-project-gray);
+    background: linear-gradient(135deg, #e3e3e3 0%, #8C8C8C 100%);
+    color: #2b2b2b;
 }
 
 /* Task Checkbox */
@@ -277,7 +278,7 @@
 }
 
 .btn-primary {
-    background: var(--color-primary);
+    background: var(--color-accent-gradient);
     color: var(--color-text-inverse);
 }
 
@@ -293,6 +294,23 @@
 
 .btn-cancel:hover {
     background: var(--color-surface-hover);
+}
+
+/* FAB ripple */
+.btn-add::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 300ms var(--ease-bounce), opacity 300ms var(--ease-bounce);
+}
+
+.btn-add:active::after {
+    transform: scale(1);
+    opacity: 1;
 }
 
 /* Modal */

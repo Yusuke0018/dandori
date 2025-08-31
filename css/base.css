@@ -21,6 +21,40 @@ body {
     touch-action: pan-y;
 }
 
+/* Animated colorful blobs */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    inset: auto;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    background: radial-gradient(closest-side, var(--color-secondary), transparent);
+    left: -160px;
+    top: -120px;
+    animation: drift 16s var(--ease-in-out-quart) infinite alternate;
+}
+
+body::after {
+    background: radial-gradient(closest-side, var(--color-magenta), transparent);
+    right: -160px;
+    bottom: -120px;
+    animation: drift 18s var(--ease-in-out-quart) 1s infinite alternate;
+}
+
+@keyframes drift {
+    from { transform: translateY(0) translateX(0) scale(1); }
+    to   { transform: translateY(30px) translateX(20px) scale(1.08); }
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;

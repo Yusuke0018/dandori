@@ -87,8 +87,19 @@
                     <h1 class="app-title">ダンドリ</h1>
                     <div class="progress-ring-container">
                         <svg class="progress-ring" width="36" height="36">
+                            <defs>
+                                <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FF8A3D"/>
+                                    <stop offset="50%" stop-color="#E84393"/>
+                                    <stop offset="100%" stop-color="#26C6DA"/>
+                                </linearGradient>
+                                <filter id="ringShadow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2"/>
+                                </filter>
+                            </defs>
                             <circle class="progress-ring-bg" cx="18" cy="18" r="15" stroke-width="3" fill="none"/>
                             <circle class="progress-ring-fill" cx="18" cy="18" r="15" stroke-width="3" fill="none"
+                                    stroke="url(#ringGrad)" filter="url(#ringShadow)"
                                     stroke-dasharray="94.2" stroke-dashoffset="94.2"/>
                         </svg>
                         <span class="progress-text">0%</span>

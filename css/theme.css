@@ -41,14 +41,14 @@
     --color-project-gray: #8C8C8C;
     
     /* Project Colors Alpha (for backgrounds) */
-    --color-project-blue-alpha: rgba(74, 144, 226, 0.1);
-    --color-project-green-alpha: rgba(82, 196, 26, 0.1);
-    --color-project-orange-alpha: rgba(250, 140, 22, 0.1);
-    --color-project-red-alpha: rgba(245, 34, 45, 0.1);
-    --color-project-purple-alpha: rgba(114, 46, 209, 0.1);
-    --color-project-teal-alpha: rgba(19, 194, 194, 0.1);
-    --color-project-pink-alpha: rgba(235, 47, 150, 0.1);
-    --color-project-gray-alpha: rgba(140, 140, 140, 0.1);
+    --color-project-blue-alpha: rgba(74, 144, 226, 0.15);
+    --color-project-green-alpha: rgba(82, 196, 26, 0.15);
+    --color-project-orange-alpha: rgba(250, 140, 22, 0.18);
+    --color-project-red-alpha: rgba(245, 34, 45, 0.18);
+    --color-project-purple-alpha: rgba(114, 46, 209, 0.18);
+    --color-project-teal-alpha: rgba(19, 194, 194, 0.18);
+    --color-project-pink-alpha: rgba(235, 47, 150, 0.18);
+    --color-project-gray-alpha: rgba(140, 140, 140, 0.14);
     
     /* Status Colors */
     --color-success: #52C41A;
