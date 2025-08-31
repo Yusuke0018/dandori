@@ -20,11 +20,17 @@ export function initStorage(){
   const now = Date.now();
   const projId = uuid();
   const tId = uuid();
+  const tDayId = uuid();
+  const tSomeId = uuid();
   const date = todayYMD();
   cache = {
     schemaVersion:1,
     projects:[{ id:projId, name:'マイプロジェクト', color:'theme/pastel/blue', memo:'', deadline:'', createdAt:now, updatedAt:now }],
-    tasks:[{ id:tId, projectId:projId, title:'ダミータスク', type:'timed', date, startMin:600, endMin:660, done:false, priority:'m', notes:'', createdAt:now, updatedAt:now }],
+    tasks:[
+      { id:tId, projectId:projId, title:'ダミータスク（時間あり）', type:'timed', date, startMin:600, endMin:660, done:false, priority:'m', notes:'', createdAt:now, updatedAt:now },
+      { id:tDayId, projectId:projId, title:'ダミータスク（時間未定）', type:'day', date, done:false, priority:'m', notes:'', createdAt:now, updatedAt:now },
+      { id:tSomeId, projectId:projId, title:'いつかやる（サンプル）', type:'someday', done:false, priority:'m', notes:'', createdAt:now, updatedAt:now }
+    ],
     settings:{ carryOver:true, timeUnitMin:15, theme:'dark' }
   };
   commit();
@@ -48,3 +54,4 @@ export function toggleTaskDone(id){
   commit();
 }
 
+export function getSomedayTasks(){ return cache.tasks.filter(t=>t.type==='someday'); }

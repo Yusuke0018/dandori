@@ -6,3 +6,7 @@
 .header{display:flex; align-items:center; gap:12px; padding:8px 12px; border-bottom:1px solid var(--line); background:var(--surface)}
 .date{font-weight:700}
 
+/* board */
+.board{padding:12px}
+.board-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:12px}
+.board-grid .task-card.list{position:relative; margin:0; height:auto}

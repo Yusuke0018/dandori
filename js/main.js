@@ -29,6 +29,13 @@ async function render(){
   if(view==='timeline'){
     const { mountTimeline } = await import('./views/timelineView.js');
     mountTimeline(content, { selectedDate, getProjects, getTasksByDate });
+  } else if(view==='day'){
+    const { mountDay } = await import('./views/dayView.js');
+    mountDay(content, { selectedDate, getProjects, getTasksByDate });
+  } else if(view==='board'){
+    const { mountBoard } = await import('./views/boardView.js');
+    const mod = await import('./storage.js');
+    mountBoard(content, { getProjects, getSomedayTasks: mod.getSomedayTasks });
   } else {
     content.appendChild(el('div',{style:{padding:'16px'}},'準備中のビューです'));
   }
@@ -44,4 +51,3 @@ async function render(){
   onStateChange(render);
   await render();
 })();
-
