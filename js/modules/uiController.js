@@ -5,6 +5,8 @@ export class UIController {
         this.currentView = 'timeline';
         this.currentDate = new Date();
         this.editingTaskId = null;
+        this.lastDeletedTask = null;
+        this.undoTimer = null;
     }
     
     init() {
@@ -143,8 +145,149 @@ export class UIController {
         card.addEventListener('click', () => {
             this.openTaskModal(task);
         });
-        
+
+        // Swipe gestures (touch): left=edit, right=delete with undo
+        this.attachSwipeHandlers(card, task);
+
         return card;
+    }
+
+    attachSwipeHandlers(card, task) {
+        let startX = 0;
+        let startY = 0;
+        let moved = false;
+
+        const resetTransform = () => {
+            card.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+            card.style.transform = '';
+            setTimeout(() => {
+                card.style.transition = '';
+            }, 220);
+        };
+
+        card.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            startX = t.clientX;
+            startY = t.clientY;
+            moved = false;
+            card.style.transition = '';
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+            const t = e.touches[0];
+            const dx = t.clientX - startX;
+            const dy = t.clientY - startY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+                moved = true;
+                e.preventDefault();
+                card.style.transform = `translateX(${dx}px)`;
+            }
+        }, { passive: false });
+
+        card.addEventListener('touchend', (e) => {
+            if (!moved) {
+                resetTransform();
+                return;
+            }
+            const dx = (e.changedTouches[0].clientX - startX) || 0;
+            if (dx > 80) {
+                // Right swipe: delete with undo
+                card.style.opacity = '0.3';
+                this.deleteTaskWithUndo(task.id, () => {
+                    // On actual delete finalize, fade out
+                    card.style.opacity = '';
+                    this.renderCurrentView();
+                });
+            } else if (dx < -80) {
+                // Left swipe: edit
+                this.openTaskModal(task);
+            }
+            resetTransform();
+        });
+    }
+
+    deleteTaskWithUndo(taskId, onFinalize) {
+        // Find and remove task immediately
+        const idx = this.taskManager.data.tasks.findIndex(t => t.id === taskId);
+        if (idx === -1) return;
+        const removed = this.taskManager.data.tasks[idx];
+        this.taskManager.data.tasks.splice(idx, 1);
+        this.taskManager.save();
+        this.renderCurrentView();
+        this.updateProgressRing();
+
+        // Store for undo
+        this.clearUndoState();
+        this.lastDeletedTask = removed;
+
+        // Show toast
+        this.showUndoToast(() => {
+            if (!this.lastDeletedTask) return;
+            // Restore
+            this.taskManager.data.tasks.push(this.lastDeletedTask);
+            this.taskManager.save();
+            this.lastDeletedTask = null;
+            this.renderCurrentView();
+            this.updateProgressRing();
+        });
+
+        // Finalize after 3s if not undone
+        this.undoTimer = setTimeout(() => {
+            this.clearUndoState();
+            if (typeof onFinalize === 'function') onFinalize();
+        }, 3000);
+    }
+
+    clearUndoState() {
+        if (this.undoTimer) {
+            clearTimeout(this.undoTimer);
+            this.undoTimer = null;
+        }
+        this.lastDeletedTask = null;
+        const existing = document.getElementById('undo-toast');
+        if (existing) existing.remove();
+    }
+
+    showUndoToast(onUndo) {
+        const toast = document.createElement('div');
+        toast.id = 'undo-toast';
+        toast.style.position = 'fixed';
+        toast.style.left = '50%';
+        toast.style.bottom = '20px';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'var(--color-neutral-900, #333)';
+        toast.style.color = '#fff';
+        toast.style.padding = '12px 16px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.15)';
+        toast.style.zIndex = '1003';
+        toast.style.display = 'flex';
+        toast.style.gap = '12px';
+        toast.style.alignItems = 'center';
+        toast.style.fontSize = '14px';
+
+        const label = document.createElement('span');
+        label.textContent = '削除しました';
+        const btn = document.createElement('button');
+        btn.textContent = '元に戻す';
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--color-primary, #2b6cb0)';
+        btn.style.border = 'none';
+        btn.style.fontWeight = '700';
+        btn.style.cursor = 'pointer';
+
+        btn.addEventListener('click', () => {
+            if (this.undoTimer) {
+                clearTimeout(this.undoTimer);
+                this.undoTimer = null;
+            }
+            toast.remove();
+            onUndo?.();
+        });
+
+        toast.appendChild(label);
+        toast.appendChild(btn);
+        document.body.appendChild(toast);
     }
     
     // Create timeline task element
