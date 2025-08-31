@@ -8,6 +8,7 @@ export class UIController {
         this.editingProjectId = null;
         this.lastDeletedTask = null;
         this.undoTimer = null;
+        this.completedSelection = new Set();
     }
     
     init() {
@@ -477,9 +478,28 @@ export class UIController {
             h.textContent = d === 'その他' ? '日付なし' : d;
             container.appendChild(h);
             groups[d].forEach(task => {
-                const card = this.createTaskCard(task);
-                card.classList.add('done');
-                container.appendChild(card);
+                const row = document.createElement('div');
+                row.className = 'task-card done';
+                row.dataset.taskId = task.id;
+                // checkbox for selection
+                const select = document.createElement('input');
+                select.type = 'checkbox';
+                select.ariaLabel = '選択';
+                select.style.marginRight = '8px';
+                select.checked = this.completedSelection.has(task.id);
+                select.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (select.checked) this.completedSelection.add(task.id);
+                    else this.completedSelection.delete(task.id);
+                });
+                const title = document.createElement('div');
+                title.className = 'task-title';
+                title.textContent = task.title;
+                row.appendChild(select);
+                row.appendChild(title);
+                // click to open editor
+                row.addEventListener('click', () => this.openTaskModal(task));
+                container.appendChild(row);
             });
         });
 
@@ -488,6 +508,35 @@ export class UIController {
         if (input && !input._bound) {
             input.addEventListener('input', () => this.renderCompletedView());
             input._bound = true;
+        }
+
+        // Bind bulk actions
+        const btnAll = document.getElementById('btn-completed-select-all');
+        const btnRev = document.getElementById('btn-completed-revert');
+        if (btnAll && !btnAll._bound) {
+            btnAll.addEventListener('click', () => {
+                const current = container.querySelectorAll('[data-task-id]');
+                const allSelected = Array.from(current).every(el => this.completedSelection.has(el.dataset.taskId));
+                if (allSelected) this.completedSelection.clear();
+                else current.forEach(el => this.completedSelection.add(el.dataset.taskId));
+                this.renderCompletedView();
+            });
+            btnAll._bound = true;
+        }
+        if (btnRev && !btnRev._bound) {
+            btnRev.addEventListener('click', () => {
+                if (this.completedSelection.size === 0) return;
+                const ids = Array.from(this.completedSelection);
+                ids.forEach(id => {
+                    const t = this.taskManager.data.tasks.find(x => x.id === id);
+                    if (t && t.done) this.taskManager.toggleTaskDone(id);
+                });
+                this.completedSelection.clear();
+                this.renderCurrentView();
+                this.updateProgressRing();
+                this.showToast('未達成に戻しました');
+            });
+            btnRev._bound = true;
         }
     }
 
