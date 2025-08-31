@@ -1,15 +1,23 @@
 /* Light Theme Design Tokens */
 :root {
     /* Core Colors */
-    --color-primary: #4A90E2;
+    --color-primary: #4A90E2; /* Blue */
     --color-primary-dark: #357ABD;
     --color-primary-alpha: rgba(74, 144, 226, 0.15);
+    --color-secondary: #FF8A3D; /* Orange */
+    --color-accent: #26C6DA;    /* Teal */
+    --color-magenta: #E84393;   /* Pink */
+    --color-lime: #A3E048;      /* Lime */
+    --color-accent-gradient: linear-gradient(135deg, #FF8A3D 0%, #E84393 50%, #26C6DA 100%);
     
     /* Background & Surface */
     --color-bg: #F7F8FA;
     --color-surface: #FFFFFF;
     --color-surface-hover: #FAFBFC;
     --color-surface-active: #F5F6F8;
+    --bg-gradient: radial-gradient(1200px 600px at -10% -10%, rgba(255,138,61,0.08), transparent 40%),
+                   radial-gradient(1200px 600px at 110% 0%, rgba(38,198,218,0.08), transparent 40%),
+                   radial-gradient(800px 400px at 50% 110%, rgba(232,67,147,0.06), transparent 50%);
     
     /* Text Colors */
     --color-text: #2C3E50;

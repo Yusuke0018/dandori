@@ -154,6 +154,7 @@ export class UIController {
                 tag.dataset.color = project.color;
                 tag.textContent = project.name;
                 card.appendChild(tag);
+                card.classList.add(`proj-color-${project.color}`);
             }
         }
         

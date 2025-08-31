@@ -16,6 +16,13 @@
     border-bottom: 1px solid var(--color-border);
 }
 
+.app-header::after {
+    content: '';
+    display: block;
+    height: 3px;
+    background: var(--color-accent-gradient);
+}
+
 .header-content {
     display: flex;
     align-items: center;
@@ -37,7 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-primary);
+    background: var(--color-accent-gradient);
     color: var(--color-text-inverse);
     border-radius: var(--radius-pill);
     box-shadow: var(--shadow-md);
@@ -83,7 +90,7 @@
     transform: translateX(-50%);
     width: 32px;
     height: 3px;
-    background: var(--color-primary);
+    background: var(--color-accent-gradient);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
@@ -113,6 +120,8 @@
     transition: all var(--transition-base);
     position: relative;
     user-select: none;
+    border-left: 4px solid var(--color-primary);
+    background-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(74,144,226,0.06) 100%);
 }
 
 .task-card:hover {
@@ -129,6 +138,16 @@
     opacity: 0.6;
     text-decoration: line-through;
 }
+
+/* Project color accents on task card */
+.task-card.proj-color-blue { border-left-color: var(--color-project-blue); }
+.task-card.proj-color-green { border-left-color: var(--color-project-green); }
+.task-card.proj-color-orange { border-left-color: var(--color-project-orange); }
+.task-card.proj-color-red { border-left-color: var(--color-project-red); }
+.task-card.proj-color-purple { border-left-color: var(--color-project-purple); }
+.task-card.proj-color-teal { border-left-color: var(--color-project-teal); }
+.task-card.proj-color-pink { border-left-color: var(--color-project-pink); }
+.task-card.proj-color-gray { border-left-color: var(--color-project-gray); }
 
 .task-card.completing {
     animation: task-bounce 0.25s ease-out, task-fade 0.25s ease-out 0.25s forwards;
