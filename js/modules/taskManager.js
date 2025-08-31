@@ -95,6 +95,14 @@ export class TaskManager {
     getSomedayTasks() {
         return this.data.tasks.filter(t => t.type === 'someday' && !t.done);
     }
+
+    // Get completed tasks (recent first)
+    getCompletedTasks(limit = 100) {
+        return this.data.tasks
+            .filter(t => t.done)
+            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+            .slice(0, limit);
+    }
     
     // Create a new project
     createProject(projectData) {

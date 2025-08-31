@@ -210,21 +210,32 @@ export class PanelController {
     }
     
     updateBadges() {
-        // This would be called when tasks change
-        // For now, just example counts
-        const badges = {
-            'today': 3,
-            'someday': 5,
-            'projects': 2
-        };
-        
-        Object.entries(badges).forEach(([view, count]) => {
-            const item = document.querySelector(`.panel-item[data-view="${view}"] .panel-badge`);
-            if (item) {
-                item.textContent = count;
-                item.style.display = count > 0 ? 'block' : 'none';
-            }
-        });
+        try {
+            const tm = window.app?.taskManager;
+            if (!tm) return;
+            const todayStr = tm.formatDate(new Date());
+            const todayCount = tm.data.tasks.filter(t => !t.done && (t.type === 'day' || t.type === 'timed') && t.date === todayStr).length;
+            const somedayCount = tm.data.tasks.filter(t => !t.done && t.type === 'someday').length;
+            const projectsCount = tm.data.projects.length;
+            const completedCount = tm.data.tasks.filter(t => t.done).length;
+
+            const badges = {
+                'today': todayCount,
+                'someday': somedayCount,
+                'projects': projectsCount,
+                'completed': completedCount
+            };
+
+            Object.entries(badges).forEach(([view, count]) => {
+                const item = document.querySelector(`.panel-item[data-view="${view}"] .panel-badge`);
+                if (item) {
+                    item.textContent = String(count);
+                    item.style.display = count > 0 ? 'block' : 'none';
+                }
+            });
+        } catch (_) {
+            // noop
+        }
     }
 }
 

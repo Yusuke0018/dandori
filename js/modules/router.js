@@ -19,7 +19,7 @@ export class Router {
     
     navigateTo(view, pushState = true) {
         // Valid views
-        const validViews = ['timeline', 'board', 'projects'];
+        const validViews = ['timeline', 'board', 'projects', 'completed'];
         
         if (!validViews.includes(view)) {
             view = 'timeline';
@@ -38,7 +38,7 @@ export class Router {
     getInitialView() {
         // Check URL hash
         const hash = window.location.hash.slice(1);
-        const validViews = ['timeline', 'board', 'projects'];
+        const validViews = ['timeline', 'board', 'projects', 'completed'];
         
         if (validViews.includes(hash)) {
             return hash;

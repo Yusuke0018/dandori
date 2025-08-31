@@ -45,6 +45,9 @@ export class UIController {
             case 'projects':
                 this.renderProjectsView();
                 break;
+            case 'completed':
+                this.renderCompletedView();
+                break;
         }
     }
     
@@ -113,6 +116,7 @@ export class UIController {
         const card = document.createElement('div');
         card.className = 'task-card';
         card.dataset.taskId = task.id;
+        if (task.done) card.classList.add('done');
         
         // Add project tag if exists
         if (task.projectId && task.projectId !== 'default') {
@@ -369,6 +373,19 @@ export class UIController {
         
         return card;
     }
+
+    // Render completed tasks view
+    renderCompletedView() {
+        const tasks = this.taskManager.getCompletedTasks();
+        const container = document.querySelector('.completed-list');
+        container.innerHTML = '';
+
+        tasks.forEach(task => {
+            const card = this.createTaskCard(task);
+            card.classList.add('done');
+            container.appendChild(card);
+        });
+    }
     
     // Handle task completion
     handleTaskComplete(taskId) {
@@ -381,6 +398,7 @@ export class UIController {
         setTimeout(() => {
             this.taskManager.completeTask(taskId);
             this.renderCurrentView();
+            this.updateProgressRing();
         }, 300);
     }
     

@@ -131,7 +131,7 @@
 }
 
 .task-card.completing {
-    animation: fadeOutScale var(--transition-slow) forwards;
+    animation: task-bounce 0.25s ease-out, task-fade 0.25s ease-out 0.25s forwards;
 }
 
 @keyframes fadeOutScale {
@@ -139,6 +139,22 @@
         opacity: 0;
         transform: scale(0.9);
     }
+}
+
+/* Completed style */
+.task-card.done .task-title {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+@keyframes task-bounce {
+    0% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes task-fade {
+    to { opacity: 0; }
 }
 
 /* Project Tag Pill */
