@@ -1,0 +1,38 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="205" fill="url(#bgGradient)"/>
+  
+  <!-- Main "ダ" character -->
+  <path d="M 320 280 L 320 480 Q 320 520 340 540 Q 360 560 400 560 L 580 560 Q 620 560 640 540 Q 660 520 660 480 L 660 420 M 480 420 L 480 620 Q 480 660 500 680 Q 520 700 560 700 L 640 700" 
+        stroke="#2C3E50" 
+        stroke-width="64" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        fill="none"/>
+  
+  <!-- Time blocks at bottom representing "段" (steps/stages) -->
+  <g id="timeBlocks">
+    <!-- Block 1 - Past (completed) -->
+    <rect x="240" y="800" width="140" height="80" rx="12" fill="#52C41A" opacity="0.8"/>
+    
+    <!-- Block 2 - Present (in progress) -->
+    <rect x="420" y="800" width="140" height="80" rx="12" fill="#4A90E2" opacity="0.9"/>
+    
+    <!-- Block 3 - Future (planned) -->
+    <rect x="600" y="800" width="140" height="80" rx="12" fill="#FA8C16" opacity="0.7"/>
+  </g>
+  
+  <!-- Subtle accent dots -->
+  <circle cx="780" cy="340" r="16" fill="#4A90E2" opacity="0.6"/>
+  <circle cx="820" cy="380" r="12" fill="#52C41A" opacity="0.5"/>
+  <circle cx="800" cy="420" r="10" fill="#FA8C16" opacity="0.4"/>
+  
+  <!-- Definitions -->
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1024" y2="1024">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F7F8FA"/>
+    </linearGradient>
+  </defs>
+</svg>

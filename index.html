@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ダンドリ - スマートなタスク管理</title>
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ダンドリ">
+    
+    <!-- Android Meta Tags -->
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Icons (will be added after creation) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/ios-180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/views.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">ダンドリ</h1>
+                <button class="btn-add" aria-label="タスク追加">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="view-tabs">
+                <button class="tab-btn active" data-view="timeline">タイムライン</button>
+                <button class="tab-btn" data-view="board">いつかやる</button>
+                <button class="tab-btn" data-view="projects">プロジェクト</button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            <!-- Timeline View -->
+            <div id="timeline-view" class="view-container active">
+                <div class="date-header">
+                    <button class="date-nav prev" aria-label="前日">‹</button>
+                    <h2 class="current-date">12月31日（火）</h2>
+                    <button class="date-nav next" aria-label="翌日">›</button>
+                </div>
+                
+                <!-- Day Tasks (Time Unspecified) -->
+                <div class="day-tasks">
+                    <h3 class="section-title">この日のタスク</h3>
+                    <div class="day-tasks-list">
+                        <!-- Day tasks will be rendered here -->
+                    </div>
+                </div>
+                
+                <!-- Timeline Grid -->
+                <div class="timeline-container">
+                    <div class="time-labels">
+                        <!-- Time labels 0:00 - 23:00 -->
+                    </div>
+                    <div class="timeline-grid">
+                        <!-- Current time indicator -->
+                        <div class="current-time-line"></div>
+                        <!-- Timed tasks will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Board View (Someday) -->
+            <div id="board-view" class="view-container">
+                <h2 class="view-title">いつかやるタスク</h2>
+                <div class="board-grid">
+                    <!-- Someday tasks will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Projects View -->
+            <div id="projects-view" class="view-container">
+                <h2 class="view-title">プロジェクト</h2>
+                <div class="projects-list">
+                    <!-- Project cards will be rendered here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Task Editor Modal -->
+        <div id="task-modal" class="modal" hidden>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">タスクを追加</h3>
+                    <button class="modal-close" aria-label="閉じる">×</button>
+                </div>
+                <form id="task-form" class="task-form">
+                    <div class="form-group">
+                        <label for="task-title">タスク名</label>
+                        <input type="text" id="task-title" required placeholder="何をしますか？">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>タイプ</label>
+                        <div class="task-type-selector">
+                            <button type="button" class="type-btn" data-type="someday">いつかやる</button>
+                            <button type="button" class="type-btn active" data-type="day">特定の日</button>
+                            <button type="button" class="type-btn" data-type="timed">時間指定</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group date-group">
+                        <label for="task-date">日付</label>
+                        <input type="date" id="task-date">
+                    </div>
+                    
+                    <div class="form-group time-group" hidden>
+                        <label>時間</label>
+                        <div class="time-inputs">
+                            <input type="time" id="task-start" placeholder="開始">
+                            <span>〜</span>
+                            <input type="time" id="task-end" placeholder="終了">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-project">プロジェクト</label>
+                        <select id="task-project">
+                            <option value="">なし</option>
+                            <!-- Projects will be populated here -->
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>
