@@ -75,6 +75,14 @@ export class TaskManager {
     completeTask(taskId) {
         return this.updateTask(taskId, { done: true });
     }
+
+    // Toggle task done state
+    toggleTaskDone(taskId) {
+        const idx = this.data.tasks.findIndex(t => t.id === taskId);
+        if (idx === -1) return null;
+        const current = this.data.tasks[idx];
+        return this.updateTask(taskId, { done: !current.done });
+    }
     
     // Get tasks by type
     getTasksByType(type) {
@@ -86,14 +94,13 @@ export class TaskManager {
         const dateStr = this.formatDate(date);
         return this.data.tasks.filter(t => 
             (t.type === 'day' || t.type === 'timed') && 
-            t.date === dateStr && 
-            !t.done
+            t.date === dateStr
         );
     }
     
     // Get someday tasks
     getSomedayTasks() {
-        return this.data.tasks.filter(t => t.type === 'someday' && !t.done);
+        return this.data.tasks.filter(t => t.type === 'someday');
     }
 
     // Get completed tasks (recent first)

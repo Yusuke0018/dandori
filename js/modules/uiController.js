@@ -167,6 +167,7 @@ export class UIController {
         // Checkbox
         const checkbox = document.createElement('div');
         checkbox.className = 'task-checkbox';
+        if (task.done) checkbox.classList.add('checked');
         checkbox.addEventListener('click', (e) => {
             e.stopPropagation();
             this.handleTaskComplete(task.id);
@@ -415,19 +416,29 @@ export class UIController {
         });
     }
     
-    // Handle task completion
+    // Handle task completion (toggle)
     handleTaskComplete(taskId) {
         const card = document.querySelector(`[data-task-id="${taskId}"]`);
         if (!card) return;
-        
-        // Add completing animation
-        card.classList.add('completing');
-        
-        setTimeout(() => {
-            this.taskManager.completeTask(taskId);
+
+        // Determine current state
+        const task = this.taskManager.data.tasks.find(t => t.id === taskId);
+        const willComplete = task ? !task.done : true;
+
+        // Add completing animation only when moving to done
+        if (willComplete) {
+            card.classList.add('completing');
+            setTimeout(() => {
+                this.taskManager.toggleTaskDone(taskId);
+                this.renderCurrentView();
+                this.updateProgressRing();
+            }, 300);
+        } else {
+            // Revert immediately when unchecking
+            this.taskManager.toggleTaskDone(taskId);
             this.renderCurrentView();
             this.updateProgressRing();
-        }, 300);
+        }
     }
     
     // Open task modal
