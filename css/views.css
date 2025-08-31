@@ -1,5 +1,22 @@
 /* View-specific Styles */
 
+/* Home View */
+#home-view {
+    padding: var(--spacing-lg);
+}
+
+.home-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.task-time-inline {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+}
+
 /* Timeline View */
 #timeline-view {
     padding-bottom: var(--spacing-2xl);

@@ -71,7 +71,7 @@ export class StorageService {
             settings: {
                 carryOver: true,
                 theme: 'light',
-                defaultView: 'timeline'
+                defaultView: 'home'
             },
             lastUpdated: new Date().toISOString()
         };

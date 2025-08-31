@@ -19,10 +19,10 @@ export class Router {
     
     navigateTo(view, pushState = true) {
         // Valid views
-        const validViews = ['timeline', 'board', 'projects', 'completed'];
+        const validViews = ['home', 'timeline', 'board', 'projects', 'completed'];
         
         if (!validViews.includes(view)) {
-            view = 'timeline';
+            view = 'home';
         }
         
         // Update UI
@@ -38,13 +38,13 @@ export class Router {
     getInitialView() {
         // Check URL hash
         const hash = window.location.hash.slice(1);
-        const validViews = ['timeline', 'board', 'projects', 'completed'];
+        const validViews = ['home', 'timeline', 'board', 'projects', 'completed'];
         
         if (validViews.includes(hash)) {
             return hash;
         }
         
-        // Default to timeline
-        return 'timeline';
+        // Default to home
+        return 'home';
     }
 }

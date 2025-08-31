@@ -103,7 +103,8 @@
             </div>
             <!-- Navigation Tabs -->
             <nav class="view-tabs">
-                <button class="tab-btn active" data-view="timeline">タイムライン</button>
+                <button class="tab-btn active" data-view="home">ホーム</button>
+                <button class="tab-btn" data-view="timeline">タイムライン</button>
                 <button class="tab-btn" data-view="board">いつかやる</button>
                 <button class="tab-btn" data-view="projects">プロジェクト</button>
             </nav>
@@ -111,8 +112,18 @@
 
         <!-- Main Content Area -->
         <main class="app-main">
+            <!-- Home View (Today's tasks as cards) -->
+            <div id="home-view" class="view-container active">
+                <div class="home-section">
+                    <h2 class="view-title">今日やること</h2>
+                    <div class="home-list">
+                        <!-- Today tasks as cards will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Timeline View -->
-            <div id="timeline-view" class="view-container active">
+            <div id="timeline-view" class="view-container">
                 <div class="date-header">
                     <button class="date-nav prev" aria-label="前日">‹</button>
                     <h2 class="current-date">12月31日（火）</h2>
