@@ -448,6 +448,14 @@ export class UIController {
         const container = document.querySelector('.completed-list');
         container.innerHTML = '';
 
+        if (!tasks || tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state-card';
+            empty.textContent = '完了したタスクはまだありません。';
+            container.appendChild(empty);
+            return;
+        }
+
         tasks.forEach(task => {
             const card = this.createTaskCard(task);
             card.classList.add('done');
