@@ -166,6 +166,7 @@
     cursor: grab;
     transition: all var(--transition-base);
     overflow: hidden;
+    line-height: 1.4;
 }
 
 .timeline-task:hover {
@@ -215,6 +216,20 @@
 
 .board-grid .task-card {
     height: fit-content;
+}
+
+/* Empty states */
+.empty-hint,
+.empty-state-card {
+    color: var(--color-text-secondary);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+}
+
+.empty-state-card {
+    text-align: center;
 }
 
 /* Projects View */

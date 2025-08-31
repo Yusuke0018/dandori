@@ -4,7 +4,7 @@
   
   <!-- Main "ダ" character -->
   <path d="M 320 280 L 320 480 Q 320 520 340 540 Q 360 560 400 560 L 580 560 Q 620 560 640 540 Q 660 520 660 480 L 660 420 M 480 420 L 480 620 Q 480 660 500 680 Q 520 700 560 700 L 640 700" 
-        stroke="#2C3E50" 
+        stroke="#1A237E" 
         stroke-width="64" 
         stroke-linecap="round" 
         stroke-linejoin="round" 
@@ -30,9 +30,10 @@
   <!-- Definitions -->
   <defs>
     <!-- Background gradient -->
-    <linearGradient id="bgGradient" x1="0" y1="0" x2="1024" y2="1024">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#F7F8FA"/>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF8A3D"/>
+      <stop offset="40%" stop-color="#E84393"/>
+      <stop offset="100%" stop-color="#26C6DA"/>
     </linearGradient>
   </defs>
 </svg>

@@ -119,6 +119,7 @@
     background: var(--color-surface);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
+    padding-right: calc(var(--spacing-md) + 32px); /* space for checkbox */
     box-shadow: var(--shadow-card);
     cursor: grab;
     transition: all var(--transition-base);
@@ -169,6 +170,12 @@
 .task-card.done .task-title {
     text-decoration: line-through;
     opacity: 0.7;
+}
+
+/* Title readability */
+.task-title {
+    line-height: 1.5;
+    word-break: break-word;
 }
 
 @keyframes task-bounce {

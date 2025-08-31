@@ -97,7 +97,14 @@ export class UIController {
     renderDayTasks(tasks) {
         const container = document.querySelector('.day-tasks-list');
         container.innerHTML = '';
-        
+        if (!tasks || tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-hint';
+            empty.textContent = 'この日に予定はありません。右下の＋で追加できます。';
+            container.appendChild(empty);
+            return;
+        }
+
         tasks.forEach(task => {
             const card = this.createTaskCard(task);
             container.appendChild(card);
@@ -110,7 +117,21 @@ export class UIController {
         
         // Remove existing task elements
         grid.querySelectorAll('.timeline-task').forEach(el => el.remove());
+        // Remove any empty label
+        const prevEmpty = grid.querySelector('.empty-hint');
+        if (prevEmpty) prevEmpty.remove();
         
+        if (!tasks || tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-hint';
+            empty.style.position = 'absolute';
+            empty.style.top = '12px';
+            empty.style.left = '12px';
+            empty.textContent = '時間指定のタスクはありません。';
+            grid.appendChild(empty);
+            return;
+        }
+
         // Sort tasks by start time
         tasks.sort((a, b) => a.startMin - b.startMin);
         
@@ -353,7 +374,14 @@ export class UIController {
         const tasks = this.taskManager.getSomedayTasks();
         const container = document.querySelector('.board-grid');
         container.innerHTML = '';
-        
+        if (!tasks || tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state-card';
+            empty.textContent = '「いつかやる」タスクはありません。右下の＋で追加できます。';
+            container.appendChild(empty);
+            return;
+        }
+
         tasks.forEach(task => {
             const card = this.createTaskCard(task);
             container.appendChild(card);
@@ -365,7 +393,14 @@ export class UIController {
         const projects = this.taskManager.getProjectsWithProgress();
         const container = document.querySelector('.projects-list');
         container.innerHTML = '';
-        
+        if (!projects || projects.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state-card';
+            empty.textContent = 'プロジェクトはまだありません。右下の＋で作成できます。';
+            container.appendChild(empty);
+            return;
+        }
+
         projects.forEach(project => {
             const card = this.createProjectCard(project);
             container.appendChild(card);
