@@ -163,6 +163,23 @@
                 </div>
             </div>
 
+            <!-- Calendar Full View -->
+            <div id="calendar-view" class="view-container">
+                <div class="date-header">
+                    <button class="cal-nav prev" aria-label="前月">‹</button>
+                    <h2 class="calendar-month-label">2024年12月</h2>
+                    <button class="cal-nav next" aria-label="翌月">›</button>
+                </div>
+                <div class="full-calendar">
+                    <div class="calendar-grid">
+                        <!-- Full calendar days will be rendered here -->
+                    </div>
+                    <div class="calendar-tasks">
+                        <!-- Selected day's tasks -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Board View (Someday) -->
             <div id="board-view" class="view-container">
                 <h2 class="view-title">いつかやるタスク</h2>
@@ -332,5 +349,12 @@
 
     <!-- Scripts -->
     <script src="js/main.js" type="module"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/dandori/sw.js').catch(()=>{});
+        });
+      }
+    </script>
 </body>
 </html>

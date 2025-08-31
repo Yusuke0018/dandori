@@ -105,9 +105,23 @@
     --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Dark Mode Support (future) */
+/* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    /* Keep light theme for v1 */
+    :root {
+        --color-bg: #0F141A;
+        --color-surface: #151C22;
+        --color-surface-hover: #1B242C;
+        --color-surface-active: #1F2A33;
+        --color-text: #E6EEF6;
+        --color-text-secondary: #B6C2CD;
+        --color-text-tertiary: #91A0AE;
+        --color-border: #24303A;
+        --color-border-light: #1C2730;
+        --bg-gradient: radial-gradient(1200px 600px at -10% -10%, rgba(255,138,61,0.12), transparent 40%),
+                       radial-gradient(1200px 600px at 110% 0%, rgba(38,198,218,0.12), transparent 40%),
+                       radial-gradient(800px 400px at 50% 110%, rgba(232,67,147,0.10), transparent 50%);
+        --shadow-card: 0 2px 10px rgba(0,0,0,0.4);
+    }
 }
 
 /* High Contrast Mode */

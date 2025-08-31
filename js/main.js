@@ -59,14 +59,6 @@ class DandoriApp {
         document.querySelectorAll('.bottom-tab').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const view = e.currentTarget.dataset.view;
-                if (view === 'calendar') {
-                    // Open left panel and show mini calendar
-                    const pc = this.panelController;
-                    pc.open();
-                    const cal = document.querySelector('.mini-calendar');
-                    if (cal?.hidden) pc.showMiniCalendar(); else pc.renderMiniCalendar();
-                    return;
-                }
                 this.router.navigateTo(view);
             });
         });

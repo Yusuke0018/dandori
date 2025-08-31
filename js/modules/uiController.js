@@ -23,11 +23,15 @@ export class UIController {
     switchView(viewName) {
         // Update active tab
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.view === viewName);
+            const active = btn.dataset.view === viewName;
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-current', active ? 'page' : 'false');
         });
         // Update bottom nav
         document.querySelectorAll('.bottom-tab').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.view === viewName);
+            const active = btn.dataset.view === viewName;
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-current', active ? 'page' : 'false');
         });
         
         // Update active view
@@ -44,6 +48,9 @@ export class UIController {
         switch (this.currentView) {
             case 'timeline':
                 this.renderTimelineView();
+                break;
+            case 'calendar':
+                this.renderCalendarView();
                 break;
             case 'board':
                 this.renderBoardView();
@@ -762,6 +769,121 @@ export class UIController {
             option.value = project.id;
             option.textContent = project.name;
             select.appendChild(option);
+        });
+    }
+
+    // Full calendar view and tasks
+    renderCalendarView() {
+        const label = document.querySelector('.calendar-month-label');
+        const grid = document.querySelector('#calendar-view .calendar-grid');
+        const list = document.querySelector('#calendar-view .calendar-tasks');
+        if (!grid || !list) return;
+        grid.innerHTML = '';
+        list.innerHTML = '';
+        const base = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        const year = base.getFullYear();
+        const month = base.getMonth();
+        const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+        label.textContent = `${year}年${monthNames[month]}`;
+
+        const wdays = ['日','月','火','水','木','金','土'];
+        wdays.forEach(d => {
+            const el = document.createElement('div');
+            el.className = 'cal-weekday';
+            el.textContent = d;
+            grid.appendChild(el);
+        });
+
+        const firstDay = base.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const prevDays = (firstDay + 7) % 7;
+        const totalCells = 42;
+        const today = new Date();
+
+        for (let i = 0; i < totalCells; i++) {
+            const dayNum = i - prevDays + 1;
+            const cellDate = new Date(year, month, dayNum);
+            const inCurrent = dayNum >= 1 && dayNum <= daysInMonth;
+            const btn = document.createElement('button');
+            btn.className = 'cal-day';
+            if (!inCurrent) btn.classList.add('adjacent');
+            btn.textContent = String(cellDate.getDate());
+            if (cellDate.toDateString() === today.toDateString()) btn.classList.add('today');
+
+            const dateStr = this.taskManager.formatDate(cellDate);
+            const hasOpen = this.taskManager.data.tasks.some(t => !t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
+            const hasDone = this.taskManager.data.tasks.some(t => t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
+            if (hasOpen) btn.classList.add('has-tasks');
+            if (hasDone) btn.classList.add('has-done');
+
+            btn.addEventListener('click', () => {
+                grid.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+                btn.classList.add('selected');
+                this.renderCalendarTasks(cellDate);
+            });
+            grid.appendChild(btn);
+        }
+
+        // Month nav
+        const prev = document.querySelector('#calendar-view .cal-nav.prev');
+        const next = document.querySelector('#calendar-view .cal-nav.next');
+        if (prev && !prev._boundFull) {
+            prev.addEventListener('click', () => {
+                this.currentDate.setMonth(this.currentDate.getMonth()-1);
+                this.renderCalendarView();
+            });
+            prev._boundFull = true;
+        }
+        if (next && !next._boundFull) {
+            next.addEventListener('click', () => {
+                this.currentDate.setMonth(this.currentDate.getMonth()+1);
+                this.renderCalendarView();
+            });
+            next._boundFull = true;
+        }
+
+        // Default select current date
+        this.renderCalendarTasks(this.currentDate);
+    }
+
+    renderCalendarTasks(date) {
+        const container = document.querySelector('#calendar-view .calendar-tasks');
+        if (!container) return;
+        container.innerHTML = '';
+        const dateStr = this.taskManager.formatDate(date);
+        const tasks = this.taskManager.data.tasks
+            .filter(t => (t.type==='day'||t.type==='timed') && t.date === dateStr)
+            .sort((a,b) => (a.startMin||9999) - (b.startMin||9999));
+        if (tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-empty';
+            empty.textContent = 'この日のタスクはありません';
+            container.appendChild(empty);
+            return;
+        }
+        tasks.forEach(t => {
+            const row = document.createElement('div');
+            row.className = 'calendar-task-item';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = !!t.done;
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.taskManager.toggleTaskDone(t.id);
+                this.renderCalendarTasks(date);
+                this.updateProgressRing();
+            });
+            const time = document.createElement('div');
+            time.className = 'calendar-task-time';
+            time.textContent = t.type==='timed' ? `${this.taskManager.minutesToTime(t.startMin)}` : '';
+            const title = document.createElement('div');
+            title.className = 'calendar-task-title';
+            title.textContent = t.title;
+            row.appendChild(checkbox);
+            row.appendChild(time);
+            row.appendChild(title);
+            row.addEventListener('click', () => this.openTaskModal(t));
+            container.appendChild(row);
         });
     }
     
