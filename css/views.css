@@ -10,3 +10,7 @@
 .board{padding:12px}
 .board-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:12px}
 .board-grid .task-card.list{position:relative; margin:0; height:auto}
+
+.drop-row{display:flex; align-items:center; gap:8px}
+.drop-target{border:1px dashed var(--line); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:12px}
+.drop-target.active{border-color:var(--accent); color:var(--text); background:rgba(106,163,255,.12)}

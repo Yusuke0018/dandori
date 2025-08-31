@@ -14,6 +14,13 @@ function el(tag, attrs={}, ...children){
   return e;
 }
 
+function addDays(ymd, delta){
+  const d = new Date(ymd+'T00:00:00');
+  d.setDate(d.getDate()+delta);
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
 function buildToolbar(){
   const title = el('div',{class:'title'},'ダンドリ');
   const date = el('div',{class:'chip'}, getState().selectedDate);
@@ -22,8 +29,27 @@ function buildToolbar(){
     const type = view==='timeline' ? 'timed' : view==='day' ? 'day' : 'someday';
     showEditorModal({ mode:'create', defaultType:type, defaultDate:selectedDate });
   }}, '＋');
+  const nav = el('div',{},
+    el('button',{class:'btn', onclick:()=>navigate(`#/timeline/${getState().selectedDate}`)},'タイムライン'),
+    el('button',{class:'btn', onclick:()=>navigate(`#/day/${getState().selectedDate}`)},'日'),
+    el('button',{class:'btn', onclick:()=>navigate(`#/board`)},'ボード')
+  );
+  const prevBtn = el('button',{class:'btn', onclick:()=>{
+    const { view, selectedDate } = getState();
+    if(view==='timeline' || view==='day'){
+      const d = addDays(selectedDate, -1);
+      navigate(`#/${view}/${d}`);
+    }
+  }}, '‹');
+  const nextBtn = el('button',{class:'btn', onclick:()=>{
+    const { view, selectedDate } = getState();
+    if(view==='timeline' || view==='day'){
+      const d = addDays(selectedDate, 1);
+      navigate(`#/${view}/${d}`);
+    }
+  }}, '›');
   const todayBtn = el('button',{class:'btn', onclick:()=>navigate(`#/timeline/${todayYMD()}`)},'今日へ');
-  return el('div',{class:'toolbar'}, title, date, el('div',{class:'spacer'}), plusBtn, todayBtn);
+  return el('div',{class:'toolbar'}, title, date, nav, el('div',{class:'spacer'}), prevBtn, nextBtn, plusBtn, todayBtn);
 }
 
 async function render(){

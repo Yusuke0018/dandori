@@ -24,7 +24,8 @@ function buildHourLabels(){
 }
 
 export function mountDay(container, { selectedDate, getProjects, getTasksByDate }){
-  const header = el('div',{class:'header'}, el('div',{class:'date'}, selectedDate), el('div',{class:'muted'},'日ビュー（時間未定＋時間あり）'));
+  const dropSomeday = el('div',{class:'drop-target'}, 'いつかへ移動');
+  const header = el('div',{class:'header'}, el('div',{class:'date'}, selectedDate), el('div',{class:'muted'},'日ビュー（時間未定＋時間あり）'), el('div',{class:'spacer'}), dropSomeday);
   const unschedWrap = el('div',{style:{padding:'12px'}});
   const unschedTitle = el('div',{class:'muted', style:{margin:'4px 0 8px'}}, '時間未定');
   const unschedList = el('div',{});
@@ -101,11 +102,20 @@ export function mountDay(container, { selectedDate, getProjects, getTasksByDate 
         const rectT = timeline.getBoundingClientRect();
         const overTimeline = withinRect(x,y,rectT);
         timeline.style.outline = overTimeline? '2px dashed var(--accent)' : '';
+        const rS = dropSomeday.getBoundingClientRect();
+        dropSomeday.classList.toggle('active', withinRect(x,y,rS));
       },
       onEnd: ({x,y})=>{
         timeline.style.outline='';
         const rectT = timeline.getBoundingClientRect();
         const rectU = unschedWrap.getBoundingClientRect();
+        const rS = dropSomeday.getBoundingClientRect();
+        if(withinRect(x,y,rS)){
+          updateTask(task.id, { type:'someday', date:undefined });
+          dropSomeday.classList.remove('active');
+          refresh();
+          return;
+        }
         if(withinRect(x,y,rectT)){
           const relY = y - rectT.top; // px to minutes (1px=1min)
           const start = snapMinutes(Math.max(0, Math.min(1439, Math.round(relY))));
