@@ -149,7 +149,8 @@ export class PanelController {
             'today': 'timeline',
             'someday': 'board',
             'projects': 'projects',
-            'completed': 'completed'
+            'completed': 'completed',
+            'settings': 'settings'
         };
         
         const routerView = viewMap[view] || view;

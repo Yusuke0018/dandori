@@ -44,7 +44,11 @@ export class Router {
             return hash;
         }
         
-        // Default to timeline for今日の見やすさ
+        // Use saved default view if available
+        try {
+            const pref = this.uiController?.taskManager?.data?.settings?.defaultView;
+            if (validViews.includes(pref)) return pref;
+        } catch (_) {}
         return 'timeline';
     }
 }

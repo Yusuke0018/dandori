@@ -56,6 +56,10 @@
                         <span class="panel-icon">✅</span>
                         <span class="panel-label">完了履歴</span>
                     </button>
+                    <button class="panel-item" data-view="settings">
+                        <span class="panel-icon">⚙️</span>
+                        <span class="panel-label">設定</span>
+                    </button>
                 </nav>
                 
                 <!-- Mini Calendar -->
@@ -178,8 +182,37 @@
             <!-- Completed View -->
             <div id="completed-view" class="view-container">
                 <h2 class="view-title">完了履歴</h2>
+                <div class="completed-controls">
+                    <input type="text" id="completed-search" placeholder="キーワードで絞り込み" aria-label="完了検索">
+                </div>
                 <div class="completed-list">
                     <!-- Completed tasks will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view-container">
+                <h2 class="view-title">設定</h2>
+                <div class="settings-section">
+                    <label class="settings-row">
+                        <span>未完了の時間指定タスクを翌日に繰り越す</span>
+                        <input type="checkbox" id="setting-carryover">
+                    </label>
+                    <label class="settings-row">
+                        <span>起動時の表示</span>
+                        <select id="setting-default-view">
+                            <option value="home">ホーム</option>
+                            <option value="timeline">今日（タイムライン）</option>
+                            <option value="board">いつかやる</option>
+                            <option value="projects">プロジェクト</option>
+                            <option value="completed">完了履歴</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="settings-section">
+                    <button class="btn" id="btn-export">データをエクスポート</button>
+                    <input type="file" id="input-import" accept="application/json" hidden>
+                    <button class="btn" id="btn-import">データをインポート</button>
                 </div>
             </div>
         </main>

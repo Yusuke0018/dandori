@@ -53,6 +53,9 @@ export class UIController {
             case 'completed':
                 this.renderCompletedView();
                 break;
+            case 'settings':
+                this.renderSettingsView();
+                break;
             case 'home':
             default:
                 this.renderHomeView();
@@ -457,12 +460,88 @@ export class UIController {
             container.appendChild(empty);
             return;
         }
+        // Filter by search
+        const q = (document.getElementById('completed-search')?.value || '').trim();
+        const filtered = q ? tasks.filter(t => t.title.includes(q)) : tasks;
 
-        tasks.forEach(task => {
-            const card = this.createTaskCard(task);
-            card.classList.add('done');
-            container.appendChild(card);
+        // Group by date (YYYY-MM-DD)
+        const groups = filtered.reduce((acc, t) => {
+            const d = t.date || 'その他';
+            acc[d] = acc[d] || [];
+            acc[d].push(t);
+            return acc;
+        }, {});
+        Object.keys(groups).sort().reverse().forEach(d => {
+            const h = document.createElement('h3');
+            h.className = 'section-title';
+            h.textContent = d === 'その他' ? '日付なし' : d;
+            container.appendChild(h);
+            groups[d].forEach(task => {
+                const card = this.createTaskCard(task);
+                card.classList.add('done');
+                container.appendChild(card);
+            });
         });
+
+        // Bind search input
+        const input = document.getElementById('completed-search');
+        if (input && !input._bound) {
+            input.addEventListener('input', () => this.renderCompletedView());
+            input._bound = true;
+        }
+    }
+
+    renderSettingsView() {
+        const carry = document.getElementById('setting-carryover');
+        const defView = document.getElementById('setting-default-view');
+        if (!carry || !defView) return;
+        const s = this.taskManager.data.settings;
+        carry.checked = !!s.carryOver;
+        defView.value = s.defaultView && ['home','timeline','board','projects','completed'].includes(s.defaultView)
+            ? s.defaultView : 'timeline';
+
+        if (!carry._bound) {
+            carry.addEventListener('change', () => {
+                this.taskManager.data.settings.carryOver = carry.checked;
+                this.taskManager.save();
+                this.showToast('保存しました');
+            });
+            carry._bound = true;
+        }
+        if (!defView._bound) {
+            defView.addEventListener('change', () => {
+                this.taskManager.data.settings.defaultView = defView.value;
+                this.taskManager.save();
+                this.showToast('保存しました');
+            });
+            defView._bound = true;
+        }
+
+        const btnExport = document.getElementById('btn-export');
+        const btnImport = document.getElementById('btn-import');
+        const inputImport = document.getElementById('input-import');
+        if (btnExport && !btnExport._bound) {
+            btnExport.addEventListener('click', () => this.taskManager.storage.export());
+            btnExport._bound = true;
+        }
+        if (btnImport && !btnImport._bound) {
+            btnImport.addEventListener('click', () => inputImport.click());
+            btnImport._bound = true;
+        }
+        if (inputImport && !inputImport._bound) {
+            inputImport.addEventListener('change', async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                try {
+                    await this.taskManager.storage.import(file);
+                    this.showToast('インポートしました。再読み込みします');
+                    setTimeout(()=> location.reload(), 600);
+                } catch (err) {
+                    alert('インポートに失敗しました');
+                }
+            });
+            inputImport._bound = true;
+        }
     }
     
     // Handle task completion (toggle)
