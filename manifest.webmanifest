@@ -1,0 +1,14 @@
+{
+  "name": "ダンドリ",
+  "short_name": "ダンドリ",
+  "description": "親子2階層×3種タスクの時間軸プランナー",
+  "start_url": "index.html#/timeline",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0f1115",
+  "theme_color": "#6aa3ff",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
