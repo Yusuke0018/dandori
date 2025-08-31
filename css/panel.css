@@ -230,11 +230,11 @@
 .cal-day.has-tasks::after {
     content: '';
     position: absolute;
-    bottom: 2px;
+    bottom: 3px;
     left: 50%;
     transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     background: var(--color-primary);
     border-radius: var(--radius-pill);
 }
@@ -242,10 +242,10 @@
 .cal-day.has-done::before {
     content: '';
     position: absolute;
-    bottom: 2px;
-    left: calc(50% + 6px);
-    width: 4px;
-    height: 4px;
+    bottom: 3px;
+    left: calc(50% + 8px);
+    width: 6px;
+    height: 6px;
     background: var(--color-success);
     border-radius: var(--radius-pill);
 }

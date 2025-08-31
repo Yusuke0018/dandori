@@ -865,10 +865,27 @@ export class UIController {
             if (cellDate.toDateString() === today.toDateString()) btn.classList.add('today');
 
             const dateStr = this.taskManager.formatDate(cellDate);
-            const hasOpen = this.taskManager.data.tasks.some(t => !t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
-            const hasDone = this.taskManager.data.tasks.some(t => t.done && (t.type==='day'||t.type==='timed') && t.date === dateStr);
+            const tasksForDay = this.taskManager.data.tasks.filter(t => (t.type==='day'||t.type==='timed') && t.date === dateStr);
+            const openCount = tasksForDay.filter(t => !t.done).length;
+            const doneCount = tasksForDay.filter(t => t.done).length;
+            const hasOpen = openCount > 0;
+            const hasDone = doneCount > 0;
             if (hasOpen) btn.classList.add('has-tasks');
             if (hasDone) btn.classList.add('has-done');
+
+            // Add count badges (open and done)
+            if (openCount > 0) {
+                const b = document.createElement('span');
+                b.className = 'cal-badge open';
+                b.textContent = String(openCount);
+                btn.appendChild(b);
+            }
+            if (doneCount > 0) {
+                const b2 = document.createElement('span');
+                b2.className = 'cal-badge done';
+                b2.textContent = String(doneCount);
+                btn.appendChild(b2);
+            }
 
             btn.addEventListener('click', () => {
                 grid.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));

@@ -370,10 +370,43 @@
 #calendar-view .full-calendar { padding: var(--spacing-lg); background: var(--color-surface); }
 #calendar-view .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: var(--spacing-md); }
 #calendar-view .cal-weekday { text-align: center; font-size: 0.75rem; color: var(--color-text-tertiary); padding-bottom: 4px; }
-#calendar-view .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); }
+#calendar-view .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); }
 #calendar-view .cal-day.today { background: var(--color-primary-alpha); color: var(--color-primary); font-weight: 600; }
 #calendar-view .cal-day.selected { background: var(--color-primary); color: var(--color-text-inverse); }
 #calendar-view .calendar-tasks { background: var(--color-surface); border-radius: var(--radius-md); box-shadow: var(--shadow-card); padding: var(--spacing-md); }
+
+/* Full calendar dots for visibility */
+#calendar-view .cal-day.has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: calc(50% - 6px);
+    width: 6px; height: 6px;
+    background: var(--color-primary);
+    border-radius: 50%;
+}
+#calendar-view .cal-day.has-done::before {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: calc(50% + 2px);
+    width: 6px; height: 6px;
+    background: var(--color-success);
+    border-radius: 50%;
+}
+
+/* Count badges */
+#calendar-view .cal-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    min-width: 16px; height: 16px;
+    padding: 0 4px;
+    border-radius: var(--radius-pill);
+    font-size: 10px; line-height: 16px;
+    color: var(--color-text-inverse);
+}
+#calendar-view .cal-badge.open { background: var(--color-primary); }
+#calendar-view .cal-badge.done { background: var(--color-success); top: 22px; }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
