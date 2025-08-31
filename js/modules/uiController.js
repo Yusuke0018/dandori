@@ -804,6 +804,13 @@ export class UIController {
         const dateElement = document.querySelector('.current-date');
         const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
         dateElement.textContent = this.currentDate.toLocaleDateString('ja-JP', options);
+        // Adjust timeline padding to avoid overlap with sticky date header
+        const header = document.querySelector('.date-header');
+        const timeline = document.getElementById('timeline-view');
+        if (header && timeline) {
+            const h = header.offsetHeight || 56;
+            timeline.style.paddingTop = `${h + 8}px`;
+        }
     }
     
     // Populate projects dropdown

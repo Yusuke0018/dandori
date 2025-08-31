@@ -178,7 +178,7 @@ class DandoriApp {
         const container = document.querySelector('.app-main');
         if (!container) return;
         let sx = 0, sy = 0, dx = 0, dy = 0, active = false;
-        const threshold = 60;
+        const threshold = 40;
         const views = ['timeline','calendar','board','projects','completed'];
         const onStart = (x, y) => { sx = x; sy = y; dx = dy = 0; active = true; };
         const onMove = (x, y) => { if (!active) return; dx = x - sx; dy = y - sy; };
@@ -194,7 +194,7 @@ class DandoriApp {
             }
         };
         container.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-        container.addEventListener('touchmove', e => onMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        container.addEventListener('touchmove', e => { onMove(e.touches[0].clientX, e.touches[0].clientY); if (active && Math.abs(dx) > Math.abs(dy)) e.preventDefault(); }, { passive: false });
         container.addEventListener('touchend', onEnd, { passive: true });
         container.addEventListener('pointerdown', e => onStart(e.clientX, e.clientY));
         container.addEventListener('pointermove', e => onMove(e.clientX, e.clientY));
