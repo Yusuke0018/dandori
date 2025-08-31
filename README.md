@@ -170,3 +170,7 @@ MIT
 ---
 
 **Repository**: https://github.com/Yusuke0018/dandori
+
+## 🧩 Issue作成ガイド
+
+不具合報告は「不具合報告（Actual/Expected/Advice/Environment）」テンプレートをご利用ください。詳細な書き方は docs/bugfix-request-guide.md を参照してください。
