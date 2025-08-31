@@ -1,6 +1,7 @@
 import { getProjectById } from '../storage.js';
 import { todayYMD } from '../state.js';
 import { createTaskCard } from '../components/taskCard.js';
+import { computeLanes } from '../services/layout.js';
 
 function el(tag, attrs={}, ...children){
   const e=document.createElement(tag);
@@ -33,19 +34,26 @@ export function mountTimeline(container, { selectedDate, getProjects, getTasksBy
   container.appendChild(header);
   container.appendChild(scroll);
 
-  const tasks = getTasksByDate(selectedDate);
   const projs = getProjects();
   const byId = Object.fromEntries(projs.map(p=>[p.id,p]));
 
   function refresh(){
     // clear task cards
     [...timeline.querySelectorAll('.task-card')].forEach(n=>n.remove());
+    const tasks = getTasksByDate(selectedDate);
+    const lanes = computeLanes(tasks);
+    const rect = timeline.getBoundingClientRect();
+    const avail = rect.width - 64 - 12; const gap = 6;
     for(const t of tasks){
       if(t.type!=='timed') continue;
       const proj = byId[t.projectId];
       const card = createTaskCard(t, proj, refresh);
       const top = t.startMin; const height = Math.max(24, (t.endMin - t.startMin));
       card.style.top = `${top}px`; card.style.height = `${height}px`;
+      const ln = lanes[t.id] || { lane:0, lanes:1 };
+      const width = (avail - gap*(ln.lanes-1)) / ln.lanes;
+      const left = 64 + ln.lane*(width + gap);
+      card.style.left = `${left}px`; card.style.width = `${width}px`; card.style.right='auto';
       timeline.appendChild(card);
     }
   }
@@ -69,4 +77,3 @@ export function mountTimeline(container, { selectedDate, getProjects, getTasksBy
   // expose cleanup if needed (not used yet)
   container.__cleanup = cleanup;
 }
-

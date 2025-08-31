@@ -1,6 +1,8 @@
-import { getProjectById } from '../storage.js';
+import { getProjectById, updateTask } from '../storage.js';
 import { createTaskCard } from '../components/taskCard.js';
 import { todayYMD } from '../state.js';
+import { makeDraggable, withinRect, snapMinutes } from '../services/dragdrop.js';
+import { computeLanes } from '../services/layout.js';
 
 function el(tag, attrs={}, ...children){
   const e=document.createElement(tag);
@@ -41,28 +43,37 @@ export function mountDay(container, { selectedDate, getProjects, getTasksByDate 
   container.appendChild(unschedWrap);
   container.appendChild(scroll);
 
-  const tasks = getTasksByDate(selectedDate);
   const projs = getProjects();
   const byId = Object.fromEntries(projs.map(p=>[p.id,p]));
 
   function refresh(){
+    const tasks = getTasksByDate(selectedDate);
     // 時間未定
     unschedList.innerHTML='';
     for(const t of tasks){
       if(t.type!=='day') continue;
       const proj = byId[t.projectId];
       const card = createTaskCard(t, proj, refresh);
+      enableDragDayToTimeline(card, t);
       card.classList.add('list');
       unschedList.appendChild(card);
     }
     // 時間あり
     [...timeline.querySelectorAll('.task-card')].forEach(n=>n.remove());
+    const lanes = computeLanes(tasks);
+    const rect = timeline.getBoundingClientRect();
+    const avail = rect.width - 64 - 12; const gap = 6;
     for(const t of tasks){
       if(t.type!=='timed') continue;
       const proj = byId[t.projectId];
       const card = createTaskCard(t, proj, refresh);
       const top = t.startMin; const height = Math.max(24, (t.endMin - t.startMin));
       card.style.top = `${top}px`; card.style.height = `${height}px`;
+      const ln = lanes[t.id] || { lane:0, lanes:1 };
+      const width = (avail - gap*(ln.lanes-1)) / ln.lanes;
+      const left = 64 + ln.lane*(width + gap);
+      card.style.left = `${left}px`; card.style.width = `${width}px`; card.style.right='auto';
+      enableDragTimed(card, t);
       timeline.appendChild(card);
     }
   }
@@ -81,5 +92,59 @@ export function mountDay(container, { selectedDate, getProjects, getTasksByDate 
   const id = setInterval(updateNow, 60*1000);
   const cleanup = () => clearInterval(id);
   container.__cleanup = cleanup;
-}
 
+  // DnD helpers
+  function enableDragDayToTimeline(card, task){
+    makeDraggable(card, {
+      onMove: ({x,y})=>{
+        // visual hint
+        const rectT = timeline.getBoundingClientRect();
+        const overTimeline = withinRect(x,y,rectT);
+        timeline.style.outline = overTimeline? '2px dashed var(--accent)' : '';
+      },
+      onEnd: ({x,y})=>{
+        timeline.style.outline='';
+        const rectT = timeline.getBoundingClientRect();
+        const rectU = unschedWrap.getBoundingClientRect();
+        if(withinRect(x,y,rectT)){
+          const relY = y - rectT.top; // px to minutes (1px=1min)
+          const start = snapMinutes(Math.max(0, Math.min(1439, Math.round(relY))));
+          const dur = 60; // default 60min
+          const end = Math.min(24*60, start + dur);
+          updateTask(task.id, { type:'timed', date:selectedDate, startMin:start, endMin:end });
+          refresh();
+        } else if(withinRect(x,y,rectU)){
+          // stay as day
+        }
+      }
+    });
+  }
+
+  function enableDragTimed(card, task){
+    makeDraggable(card, {
+      onMove: ({x,y})=>{
+        const rectT = timeline.getBoundingClientRect();
+        const overTimeline = withinRect(x,y,rectT);
+        const rectU = unschedWrap.getBoundingClientRect();
+        timeline.style.outline = overTimeline? '2px dashed var(--accent)' : '';
+        unschedWrap.style.outline = withinRect(x,y,rectU)? '2px dashed var(--accent)' : '';
+      },
+      onEnd: ({x,y})=>{
+        timeline.style.outline=''; unschedWrap.style.outline='';
+        const rectT = timeline.getBoundingClientRect();
+        const rectU = unschedWrap.getBoundingClientRect();
+        if(withinRect(x,y,rectT)){
+          const relY = y - rectT.top;
+          const start = snapMinutes(Math.max(0, Math.min(1439, Math.round(relY))));
+          const dur = Math.max(15, (task.endMin - task.startMin));
+          const end = Math.min(24*60, start + dur);
+          updateTask(task.id, { type:'timed', date:selectedDate, startMin:start, endMin:end });
+          refresh();
+        } else if(withinRect(x,y,rectU)){
+          updateTask(task.id, { type:'day', date:selectedDate, startMin:undefined, endMin:undefined });
+          refresh();
+        }
+      }
+    });
+  }
+}
