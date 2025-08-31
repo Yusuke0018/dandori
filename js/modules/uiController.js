@@ -935,7 +935,14 @@ export class UIController {
             row.appendChild(checkbox);
             row.appendChild(time);
             row.appendChild(title);
-            row.addEventListener('click', () => this.openTaskModal(t));
+            // Long-press delete / click edit
+            let lpTimer = null; let lpTriggered = false; const LP_MS = 600;
+            row.addEventListener('pointerdown', () => { lpTriggered=false; clearTimeout(lpTimer); lpTimer=setTimeout(()=>{ lpTriggered=true; this.confirmDeleteTask(t.id); }, LP_MS); });
+            const cancel = ()=> clearTimeout(lpTimer);
+            row.addEventListener('pointerup', cancel);
+            row.addEventListener('pointerleave', cancel);
+            row.addEventListener('pointercancel', cancel);
+            row.addEventListener('click', () => { if (!lpTriggered) this.openTaskModal(t); });
             container.appendChild(row);
         });
     }
