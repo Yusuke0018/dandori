@@ -1,0 +1,12 @@
+.tag-pill{display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border-radius:999px; font-size:12px; background:color-mix(in oklab, var(--accent) 35%, white 0%); color:#0b0e14}
+.muted{color:var(--muted)}
+.ok{color:var(--ok)}
+.danger{color:var(--danger)}
+.shadow{box-shadow:var(--shadow)}
+
+/* 色テーマの一例（簡易） */
+[data-color="theme/pastel/blue"]{--accent:#84b6ff}
+[data-color="theme/pastel/green"]{--accent:#91e8b0}
+[data-color="theme/pastel/pink"]{--accent:#ffb0cc}
+[data-color="theme/pastel/yellow"]{--accent:#ffe08a}
+

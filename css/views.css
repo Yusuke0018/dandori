@@ -1,0 +1,8 @@
+.timeline{position:relative; height:1440px; background:linear-gradient(to bottom, transparent 95%, rgba(255,255,255,.04) 95%); background-size:100% 60px;}
+.timeline-wrap{position:relative; overflow:auto; height:calc(100vh - 56px)}
+.hour-labels{position:absolute; left:8px; top:0; bottom:0; width:48px; color:var(--muted); font-size:12px}
+.hour-label{position:absolute; left:0; width:48px; text-align:right}
+.now-line{position:absolute; left:56px; right:0; height:2px; background:var(--danger); box-shadow:0 0 0 1px rgba(255,106,122,.3)}
+.header{display:flex; align-items:center; gap:12px; padding:8px 12px; border-bottom:1px solid var(--line); background:var(--surface)}
+.date{font-weight:700}
+

@@ -1,0 +1,18 @@
+.task-card{
+  position:absolute; left:64px; right:12px;
+  background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--radius-md); padding:8px 10px; box-shadow:var(--shadow);
+  transition:transform .15s cubic-bezier(.2,.8,.2,1), opacity .15s cubic-bezier(.2,.8,.2,1);
+}
+.task-card.done{opacity:.5; text-decoration:line-through}
+.task-title{font-weight:600; font-size:14px}
+.row{display:flex; align-items:center; gap:8px}
+.row.top{justify-content:space-between; margin-bottom:4px}
+.checkbox{width:16px; height:16px; border:1px solid var(--muted); border-radius:4px; display:inline-block; cursor:pointer; position:relative}
+.checkbox.checked{background:var(--ok); border-color:var(--ok)}
+.checkbox.checked::after{content:""; position:absolute; inset:3px; border:2px solid #0b0e14; border-left:0; border-top:0; transform:rotate(45deg)}
+
+.chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:2px 8px; font-size:12px; color:var(--muted)}
+
+.toast{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; background:#222a; color:#fff; padding:8px 12px; border-radius:8px}
+
