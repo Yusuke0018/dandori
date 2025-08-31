@@ -298,6 +298,9 @@
 .bottom-tab span { font-size: 11px; }
 .bottom-tab.active { color: var(--color-primary); font-weight: 600; }
 
+/* Force-hide legacy bottom nav if remains in cache */
+.bottom-nav, .bottom-tab { display: none !important; }
+
 /* Panel Backdrop */
 .panel-backdrop {
     position: fixed;

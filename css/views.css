@@ -32,6 +32,7 @@
     position: sticky;
     top: var(--header-height);
     z-index: var(--z-sticky);
+    margin-bottom: var(--spacing-md);
 }
 
 .date-nav {
@@ -60,7 +61,7 @@
 /* Day Tasks Section */
 .day-tasks {
     padding: var(--spacing-lg);
-    margin-top: var(--spacing-md); /* avoid overlap with sticky date header */
+    margin-top: var(--spacing-xl); /* avoid overlap with sticky date header */
     background: var(--color-surface);
     border-bottom: 2px solid var(--color-border);
 }
