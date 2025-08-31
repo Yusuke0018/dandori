@@ -342,7 +342,8 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(()=>{});
+          const v = 'v3';
+          navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' }).catch(()=>{});
         });
       }
     </script>
