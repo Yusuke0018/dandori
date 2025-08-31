@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Auto-push current branch to origin after each commit
+branch="$(git rev-parse --abbrev-ref HEAD)"
+remote="origin"
+
+# Skip if in detached HEAD
+if [[ "$branch" == "HEAD" ]]; then
+  exit 0
+fi
+
+# Ensure upstream auto-setup and push default behavior
+git config --local push.default current >/dev/null
+git config --local push.autoSetupRemote true >/dev/null 2>&1 || true
+
+# Try to push quietly; fall back to verbose on error
+if ! git push "$remote" "$branch" --quiet; then
+  git push "$remote" "$branch"
+fi
+
