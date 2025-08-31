@@ -44,7 +44,7 @@ export class Router {
             return hash;
         }
         
-        // Default to home
-        return 'home';
+        // Default to timeline for今日の見やすさ
+        return 'timeline';
     }
 }

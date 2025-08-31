@@ -39,9 +39,19 @@ class DandoriApp {
     }
     
     setupEventListeners() {
-        // Add task button
+        // Add button: tasks by default, projects when in projects view
         document.querySelector('.btn-add').addEventListener('click', () => {
-            this.uiController.openTaskModal();
+            if (this.uiController.currentView === 'projects') {
+                const name = window.prompt('プロジェクト名を入力してください');
+                if (!name || !name.trim()) return;
+                const colors = ['blue','green','orange','red','purple','teal','pink','gray'];
+                const colorInput = window.prompt(`色を選択してください:\n${colors.join(', ')}`, 'blue');
+                const color = colors.includes((colorInput || '').trim()) ? colorInput.trim() : 'blue';
+                this.taskManager.createProject({ name: name.trim(), color });
+                this.uiController.renderCurrentView();
+            } else {
+                this.uiController.openTaskModal();
+            }
         });
         
         // Tab navigation
