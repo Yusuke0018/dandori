@@ -279,6 +279,10 @@
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-text);
+    max-width: 60vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .project-deadline {
