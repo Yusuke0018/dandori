@@ -219,7 +219,7 @@ export class PanelController {
             }
 
             btn.addEventListener('click', () => {
-                this.handleDateSelection(cellDate);
+                this.handleDateSelection(cellDate, btn);
             });
             grid.appendChild(btn);
         }
@@ -230,12 +230,50 @@ export class PanelController {
         this.renderMiniCalendar();
     }
     
-    handleDateSelection(date) {
-        // Navigate to timeline view with selected date
-        window.app.uiController.currentDate = date;
-        window.app.uiController.updateDateHeader();
-        this.router.navigateTo('timeline');
-        this.close();
+    handleDateSelection(date, btn) {
+        // Highlight selection
+        document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+        btn?.classList.add('selected');
+
+        // Render tasks list under mini-calendar without navigating
+        this.renderTasksForDate(date);
+    }
+
+    renderTasksForDate(date) {
+        const container = document.querySelector('.calendar-tasks');
+        if (!container) return;
+        container.innerHTML = '';
+        const tm = window.app?.taskManager;
+        if (!tm) return;
+        const dateStr = tm.formatDate(date);
+        const tasks = tm.data.tasks.filter(t => (t.type==='day'||t.type==='timed') && t.date === dateStr && !t.done)
+            .sort((a,b) => (a.startMin||9999) - (b.startMin||9999));
+        if (tasks.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-empty';
+            empty.textContent = 'この日の未完了タスクはありません';
+            container.appendChild(empty);
+            return;
+        }
+        tasks.forEach(t => {
+            const row = document.createElement('div');
+            row.className = 'calendar-task-item';
+            const time = document.createElement('div');
+            time.className = 'calendar-task-time';
+            time.textContent = t.type==='timed' ? `${tm.minutesToTime(t.startMin)}` : '';
+            const title = document.createElement('div');
+            title.className = 'calendar-task-title';
+            title.textContent = t.title;
+            row.appendChild(time);
+            row.appendChild(title);
+            row.addEventListener('click', () => {
+                window.app.uiController.currentDate = new Date(date);
+                window.app.uiController.updateDateHeader();
+                window.app.router.navigateTo('timeline');
+                setTimeout(() => this.close(), 150);
+            });
+            container.appendChild(row);
+        });
     }
     
     updateBadges() {

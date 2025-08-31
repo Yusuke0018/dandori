@@ -103,6 +103,7 @@
     flex: 1;
     overflow-y: auto;
     background: var(--color-bg);
+    padding-bottom: 64px; /* space for bottom nav */
 }
 
 .view-container {

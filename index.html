@@ -68,6 +68,9 @@
                     <div class="calendar-grid">
                         <!-- Calendar days will be rendered here -->
                     </div>
+                    <div class="calendar-tasks">
+                        <!-- Tasks for selected date will be shown here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -180,6 +183,15 @@
                 </div>
             </div>
         </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="bottom-tab" data-view="home">🏠<span>ホーム</span></button>
+            <button class="bottom-tab" data-view="timeline">🕒<span>今日</span></button>
+            <button class="bottom-tab" data-view="board">💭<span>いつか</span></button>
+            <button class="bottom-tab" data-view="projects">📁<span>プロジェクト</span></button>
+            <button class="bottom-tab" data-view="completed">✅<span>履歴</span></button>
+        </nav>
 
         <!-- Floating Add Button -->
         <button class="btn-add" aria-label="タスク追加">

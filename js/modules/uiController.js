@@ -23,6 +23,10 @@ export class UIController {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === viewName);
         });
+        // Update bottom nav
+        document.querySelectorAll('.bottom-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === viewName);
+        });
         
         // Update active view
         document.querySelectorAll('.view-container').forEach(view => {
@@ -62,8 +66,8 @@ export class UIController {
         const tasks = this.taskManager.getTasksForDate(this.currentDate);
         container.innerHTML = '';
         // Sort: timed first by startMin, then day tasks
-        const timed = tasks.filter(t => t.type === 'timed').sort((a,b)=>a.startMin-b.startMin);
-        const days = tasks.filter(t => t.type === 'day');
+        const timed = tasks.filter(t => t.type === 'timed' && !t.done).sort((a,b)=>a.startMin-b.startMin);
+        const days = tasks.filter(t => t.type === 'day' && !t.done);
         const ordered = [...timed, ...days];
         ordered.forEach(task => {
             const card = this.createTaskCard(task);

@@ -61,6 +61,13 @@ class DandoriApp {
                 this.router.navigateTo(view);
             });
         });
+        // Bottom nav
+        document.querySelectorAll('.bottom-tab').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const view = e.currentTarget.dataset.view;
+                this.router.navigateTo(view);
+            });
+        });
         
         // Modal events
         const modal = document.getElementById('task-modal');
