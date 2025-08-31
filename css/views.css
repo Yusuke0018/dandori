@@ -5,6 +5,8 @@
 .now-line{position:absolute; left:56px; right:0; height:2px; background:var(--danger); box-shadow:0 0 0 1px rgba(255,106,122,.3)}
 .header{display:flex; align-items:center; gap:12px; padding:8px 12px; border-bottom:1px solid var(--line); background:var(--surface)}
 .date{font-weight:700}
+/* projects */
+.projects{padding:12px}
 
 /* board */
 .board{padding:12px}

@@ -31,7 +31,7 @@ export function initStorage(){
       { id:tDayId, projectId:projId, title:'ダミータスク（時間未定）', type:'day', date, done:false, priority:'m', notes:'', createdAt:now, updatedAt:now },
       { id:tSomeId, projectId:projId, title:'いつかやる（サンプル）', type:'someday', done:false, priority:'m', notes:'', createdAt:now, updatedAt:now }
     ],
-    settings:{ carryOver:true, timeUnitMin:15, theme:'dark' }
+    settings:{ carryOver:true, timeUnitMin:15, theme:'dark', lastOpenedYMD: date }
   };
   commit();
 }
@@ -47,6 +47,7 @@ export function getAll(){ return cache; }
 export function getProjects(){ return cache.projects.slice(); }
 export function getProjectById(id){ return cache.projects.find(p=>p.id===id); }
 export function getTasksByDate(date){ return cache.tasks.filter(t=>t.date===date); }
+export function getAllTasks(){ return cache.tasks.slice(); }
 export function toggleTaskDone(id){
   const t = cache.tasks.find(x=>x.id===id);
   if(!t) return;
@@ -90,4 +91,11 @@ export function updateTask(id, patch){
 export function deleteTask(id){
   const idx = cache.tasks.findIndex(x=>x.id===id);
   if(idx>=0){ cache.tasks.splice(idx,1); commit(); }
+}
+
+export function getSettings(){ return { ...cache.settings }; }
+export function updateSettings(patch){ Object.assign(cache.settings, patch); commit(); }
+
+export function hasOverlapOn(date, startMin, endMin, excludeId){
+  return cache.tasks.some(t=> t.type==='timed' && t.date===date && t.id!==excludeId && Math.max(t.startMin, startMin) < Math.min(t.endMin, endMin));
 }

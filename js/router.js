@@ -1,7 +1,7 @@
 import { setState } from './state.js';
 
 function parseHash(){
-  const m = location.hash.match(/^#\/(timeline|day|board)\/?(\d{4}-\d{2}-\d{2})?/);
+  const m = location.hash.match(/^#\/(timeline|day|board|projects)\/?(\d{4}-\d{2}-\d{2})?/);
   if(!m) return { view:'timeline', date: new Date().toISOString().slice(0,10) };
   const view = m[1];
   const date = m[2] || new Date().toISOString().slice(0,10);
@@ -20,6 +20,6 @@ export function routerStart(){
 
 function onHashChange(){
   const { view, date } = parseHash();
-  setState({ view: view==='day'?'day': view==='board'?'board':'timeline', selectedDate: date });
+  const v = (view==='day'||view==='board'||view==='projects')?view:'timeline';
+  setState({ view: v, selectedDate: date });
 }
-

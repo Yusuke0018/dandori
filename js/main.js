@@ -1,6 +1,7 @@
 import { getState, setState, onStateChange, todayYMD } from './state.js';
 import { routerStart, navigate } from './router.js';
 import { initStorage, getProjects, getTasksByDate } from './storage.js';
+import { carryOverIfNeeded } from './services/scheduler.js';
 import { showEditorModal } from './components/editorModal.js';
 
 const app = document.getElementById('app');
@@ -32,7 +33,8 @@ function buildToolbar(){
   const nav = el('div',{},
     el('button',{class:'btn', onclick:()=>navigate(`#/timeline/${getState().selectedDate}`)},'タイムライン'),
     el('button',{class:'btn', onclick:()=>navigate(`#/day/${getState().selectedDate}`)},'日'),
-    el('button',{class:'btn', onclick:()=>navigate(`#/board`)},'ボード')
+    el('button',{class:'btn', onclick:()=>navigate(`#/board`)},'ボード'),
+    el('button',{class:'btn', onclick:()=>navigate(`#/projects`)},'プロジェクト')
   );
   const prevBtn = el('button',{class:'btn', onclick:()=>{
     const { view, selectedDate } = getState();
@@ -68,6 +70,10 @@ async function render(){
     const { mountBoard } = await import('./views/boardView.js');
     const mod = await import('./storage.js');
     mountBoard(content, { getProjects, getSomedayTasks: mod.getSomedayTasks });
+  } else if(view==='projects'){
+    const { mountProjects } = await import('./views/projectsView.js');
+    const mod = await import('./storage.js');
+    mountProjects(content, { getProjects, getAllTasks: mod.getAllTasks });
   } else {
     content.appendChild(el('div',{style:{padding:'16px'}},'準備中のビューです'));
   }
@@ -75,6 +81,9 @@ async function render(){
 
 (async function start(){
   initStorage();
+  // carry-over
+  const deps = await import('./storage.js');
+  carryOverIfNeeded(todayYMD(), deps);
   const hash = location.hash;
   if(!hash || !hash.startsWith('#/')){
     navigate(`#/timeline/${todayYMD()}`);
