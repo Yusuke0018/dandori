@@ -30,7 +30,8 @@
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
     position: sticky;
-    top: calc(var(--header-height) + var(--tab-height));
+    /* スクロールコンテナ直下に吸着させる。ヘッダー分の補正はJS側で付与 */
+    top: 0;
     z-index: var(--z-sticky);
     margin-bottom: var(--spacing-md);
 }
@@ -61,7 +62,8 @@
 /* Day Tasks Section */
 .day-tasks {
     padding: var(--spacing-lg);
-    margin-top: var(--spacing-xl); /* avoid overlap with sticky date header */
+    /* 吸着ヘッダー分の余白はJSでview containerに付与 */
+    margin-top: 0;
     background: var(--color-surface);
     border-bottom: 2px solid var(--color-border);
 }

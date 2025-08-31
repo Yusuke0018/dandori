@@ -17,6 +17,8 @@ export class UIController {
         this.updateProgressRing();
         this.populateProjects();
         this.initTimeLabels();
+        // 画面サイズ変更時に吸着ヘッダーの余白を再計算
+        window.addEventListener('resize', () => this.updateDateHeader());
     }
     
     // Switch between views
@@ -35,6 +37,8 @@ export class UIController {
         
         this.currentView = viewName;
         this.renderCurrentView();
+        // 各ビュー切替後に日付ヘッダー位置補正を適用
+        this.updateDateHeader();
     }
     
     // Render current view
@@ -799,17 +803,23 @@ export class UIController {
         this.renderCurrentView();
     }
     
-    // Update date header
+    // Update date header text and adjust sticky overlap spacing
     updateDateHeader() {
-        const dateElement = document.querySelector('.current-date');
-        const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
-        dateElement.textContent = this.currentDate.toLocaleDateString('ja-JP', options);
-        // Adjust timeline padding to avoid overlap with sticky date header
-        const header = document.querySelector('.date-header');
-        const timeline = document.getElementById('timeline-view');
-        if (header && timeline) {
-            const h = header.offsetHeight || 56;
-            timeline.style.paddingTop = `${h + 8}px`;
+        // ラベル更新（タイムライン）
+        try {
+            const dateElement = document.querySelector('.current-date');
+            if (dateElement) {
+                const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+                dateElement.textContent = this.currentDate.toLocaleDateString('ja-JP', options);
+            }
+        } catch (_) {}
+
+        // アクティブビューのヘッダー高さに応じて余白を付与（重なり防止）
+        const activeHeader = document.querySelector('.view-container.active .date-header');
+        const activeView = document.querySelector('.view-container.active');
+        if (activeHeader && activeView) {
+            const h = activeHeader.offsetHeight || 56;
+            activeView.style.paddingTop = `${h + 8}px`;
         }
     }
     
@@ -915,6 +925,8 @@ export class UIController {
 
         // Default select current date
         this.renderCalendarTasks(this.currentDate);
+        // ヘッダー高さにあわせて余白を再計算
+        this.updateDateHeader();
     }
 
     renderCalendarTasks(date) {

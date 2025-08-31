@@ -177,29 +177,56 @@ class DandoriApp {
     initSwipeNavigation() {
         const container = document.querySelector('.app-main');
         if (!container) return;
+
         let sx = 0, sy = 0, dx = 0, dy = 0, active = false;
+        let touching = false; // タッチとポインタの二重発火防止
         const threshold = 40;
         const views = ['timeline','calendar','board','projects','completed'];
+
         const onStart = (x, y) => { sx = x; sy = y; dx = dy = 0; active = true; };
-        const onMove = (x, y) => { if (!active) return; dx = x - sx; dy = y - sy; };
+        const onMove = (x, y, preventDefault) => {
+            if (!active) return;
+            dx = x - sx; dy = y - sy;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8 && typeof preventDefault === 'function') {
+                // 水平方向の意図が強い場合、スクロールの既定動作を抑止
+                preventDefault();
+            }
+        };
         const onEnd = () => {
             if (!active) return; active = false;
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
                 const cur = this.uiController.currentView;
-                const idx = views.indexOf(cur);
-                if (idx !== -1) {
-                    const next = dx < 0 ? Math.min(idx + 1, views.length - 1) : Math.max(idx - 1, 0);
-                    if (next !== idx) this.router.navigateTo(views[next]);
+                // 文脈別のスワイプ挙動
+                if (cur === 'timeline') {
+                    // 日付移動（左=翌日／右=前日）
+                    this.uiController.navigateDate(dx < 0 ? 1 : -1);
+                } else if (cur === 'calendar') {
+                    // 月移動（左=翌月／右=前月）
+                    this.uiController.currentDate.setMonth(this.uiController.currentDate.getMonth() + (dx < 0 ? 1 : -1));
+                    this.uiController.renderCalendarView();
+                    this.uiController.updateDateHeader();
+                } else {
+                    // タブ移動
+                    const idx = views.indexOf(cur);
+                    if (idx !== -1) {
+                        const next = dx < 0 ? Math.min(idx + 1, views.length - 1) : Math.max(idx - 1, 0);
+                        if (next !== idx) this.router.navigateTo(views[next]);
+                    }
                 }
             }
         };
-        container.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-        container.addEventListener('touchmove', e => { onMove(e.touches[0].clientX, e.touches[0].clientY); if (active && Math.abs(dx) > Math.abs(dy)) e.preventDefault(); }, { passive: false });
-        container.addEventListener('touchend', onEnd, { passive: true });
-        container.addEventListener('pointerdown', e => onStart(e.clientX, e.clientY));
-        container.addEventListener('pointermove', e => onMove(e.clientX, e.clientY));
-        container.addEventListener('pointerup', onEnd);
-        container.addEventListener('pointercancel', ()=> active=false);
+
+        // Touch events（モバイル）
+        container.addEventListener('touchstart', e => { touching = true; const t = e.touches[0]; onStart(t.clientX, t.clientY); }, { passive: true });
+        container.addEventListener('touchmove', e => { const t = e.touches[0]; onMove(t.clientX, t.clientY, () => e.preventDefault()); }, { passive: false });
+        container.addEventListener('touchend', () => { onEnd(); touching = false; }, { passive: true });
+        container.addEventListener('touchcancel', () => { active = false; touching = false; }, { passive: true });
+
+        // Pointer events（iOS/Androidの最新環境用、タッチのみ扱う）
+        container.addEventListener('pointerdown', e => { if (touching || e.pointerType !== 'touch') return; onStart(e.clientX, e.clientY); });
+        container.addEventListener('pointermove', e => { if (touching || e.pointerType !== 'touch') return; onMove(e.clientX, e.clientY, () => e.preventDefault()); });
+        container.addEventListener('pointerup',   e => { if (touching || e.pointerType !== 'touch') return; onEnd(); });
+        container.addEventListener('pointercancel', () => { if (!touching) active = false; });
     }
 
     handleProjectSubmit() {
