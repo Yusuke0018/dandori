@@ -106,6 +106,7 @@ export class PanelController {
         this.isOpen = true;
         this.panel.classList.add('open');
         this.tab.classList.add('active');
+        this.tab.setAttribute('aria-expanded', 'true');
         this.backdrop.hidden = false;
         
         requestAnimationFrame(() => {
@@ -123,6 +124,7 @@ export class PanelController {
         this.isOpen = false;
         this.panel.classList.remove('open');
         this.tab.classList.remove('active');
+        this.tab.setAttribute('aria-expanded', 'false');
         this.backdrop.classList.remove('visible');
         
         setTimeout(() => {

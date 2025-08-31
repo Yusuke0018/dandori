@@ -204,10 +204,20 @@ export class UIController {
         // Checkbox
         const checkbox = document.createElement('div');
         checkbox.className = 'task-checkbox';
+        checkbox.setAttribute('role', 'checkbox');
+        checkbox.setAttribute('tabindex', '0');
+        checkbox.setAttribute('aria-checked', task.done ? 'true' : 'false');
         if (task.done) checkbox.classList.add('checked');
         checkbox.addEventListener('click', (e) => {
             e.stopPropagation();
             this.handleTaskComplete(task.id);
+        });
+        checkbox.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleTaskComplete(task.id);
+            }
         });
         card.appendChild(checkbox);
         
@@ -623,6 +633,9 @@ export class UIController {
             this.renderCurrentView();
             this.updateProgressRing();
         }
+        // Update ARIA state on checkbox if present
+        const cb = card.querySelector('.task-checkbox');
+        if (cb) cb.setAttribute('aria-checked', willComplete ? 'true' : 'false');
     }
     
     // Open task modal
