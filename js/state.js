@@ -27,4 +27,4 @@ export function setState(patch){
 
 export function onStateChange(fn){ listeners.add(fn); }
 export function offStateChange(fn){ listeners.delete(fn); }
-
+export function notify(){ for(const fn of listeners) fn(getState()); }

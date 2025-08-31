@@ -55,3 +55,39 @@ export function toggleTaskDone(id){
 }
 
 export function getSomedayTasks(){ return cache.tasks.filter(t=>t.type==='someday'); }
+
+export function createTask(payload){
+  const now = Date.now();
+  const id = uuid();
+  const base = { id, projectId:payload.projectId, title:payload.title, done:false, priority:'m', notes:'', createdAt:now, updatedAt:now };
+  let t;
+  if(payload.type==='timed'){
+    t = { ...base, type:'timed', date:payload.date, startMin:payload.startMin, endMin:payload.endMin };
+  } else if(payload.type==='day'){
+    t = { ...base, type:'day', date:payload.date };
+  } else {
+    t = { ...base, type:'someday' };
+  }
+  cache.tasks.push(t);
+  commit();
+  return t;
+}
+
+export function updateTask(id, patch){
+  const t = cache.tasks.find(x=>x.id===id);
+  if(!t) return;
+  Object.assign(t, patch);
+  // cleanup invalid fields by type
+  if(t.type==='someday'){
+    delete t.date; delete t.startMin; delete t.endMin;
+  } else if(t.type==='day'){
+    delete t.startMin; delete t.endMin;
+  }
+  t.updatedAt = Date.now();
+  commit();
+}
+
+export function deleteTask(id){
+  const idx = cache.tasks.findIndex(x=>x.id===id);
+  if(idx>=0){ cache.tasks.splice(idx,1); commit(); }
+}

@@ -1,4 +1,5 @@
 import { toggleTaskDone } from '../storage.js';
+import { showEditorModal } from './editorModal.js';
 
 function el(tag, attrs={}, ...children){
   const e=document.createElement(tag);
@@ -19,7 +20,8 @@ export function createTaskCard(task, project, refresh){
   const pill = el('span',{class:'tag-pill', 'data-color':project?.color||''}, project?.name||'プロジェクト');
   const title = el('div',{class:'task-title'}, task.title);
   const topRow = el('div',{class:'row top'}, el('div',{class:'row'}, box, title), pill);
-  const card = el('div',{class:`task-card ${checked?'done':''}`, 'data-color':project?.color||''}, topRow);
+  const card = el('div',{class:`task-card ${checked?'done':''}`, 'data-color':project?.color||'', onclick:()=>{
+    showEditorModal({ mode:'edit', task });
+  }}, topRow);
   return card;
 }
-

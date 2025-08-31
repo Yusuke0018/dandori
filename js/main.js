@@ -1,6 +1,7 @@
 import { getState, setState, onStateChange, todayYMD } from './state.js';
 import { routerStart, navigate } from './router.js';
 import { initStorage, getProjects, getTasksByDate } from './storage.js';
+import { showEditorModal } from './components/editorModal.js';
 
 const app = document.getElementById('app');
 
@@ -16,8 +17,13 @@ function el(tag, attrs={}, ...children){
 function buildToolbar(){
   const title = el('div',{class:'title'},'ダンドリ');
   const date = el('div',{class:'chip'}, getState().selectedDate);
+  const plusBtn = el('button',{class:'btn', onclick:()=>{
+    const { view, selectedDate } = getState();
+    const type = view==='timeline' ? 'timed' : view==='day' ? 'day' : 'someday';
+    showEditorModal({ mode:'create', defaultType:type, defaultDate:selectedDate });
+  }}, '＋');
   const todayBtn = el('button',{class:'btn', onclick:()=>navigate(`#/timeline/${todayYMD()}`)},'今日へ');
-  return el('div',{class:'toolbar'}, title, date, el('div',{class:'spacer'}), todayBtn);
+  return el('div',{class:'toolbar'}, title, date, el('div',{class:'spacer'}), plusBtn, todayBtn);
 }
 
 async function render(){
