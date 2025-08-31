@@ -135,6 +135,13 @@ python3 -m http.server 8000
 open http://localhost:8000/
 ```
 
+### アイコン生成
+正方形PNG（例: icons/source.png）からPWA/ファビコンを生成できます。
+
+```bash
+bash scripts/generate-icons.sh icons/source.png
+```
+
 ## 📝 今後の開発予定
 
 1. **Phase 1**（〜1週間）
