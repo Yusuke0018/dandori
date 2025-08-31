@@ -82,6 +82,28 @@
     position: relative;
 }
 
+/* Icon pop animation when panel opens */
+.toggle-panel .panel-item .panel-icon {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.toggle-panel.open .panel-item .panel-icon {
+    animation: icon-pop 220ms ease-out forwards;
+}
+
+.toggle-panel.open .panel-item:nth-child(1) .panel-icon { animation-delay: 20ms; }
+.toggle-panel.open .panel-item:nth-child(2) .panel-icon { animation-delay: 60ms; }
+.toggle-panel.open .panel-item:nth-child(3) .panel-icon { animation-delay: 100ms; }
+.toggle-panel.open .panel-item:nth-child(4) .panel-icon { animation-delay: 140ms; }
+.toggle-panel.open .panel-item:nth-child(5) .panel-icon { animation-delay: 180ms; }
+
+@keyframes icon-pop {
+    0% { opacity: 0; transform: scale(0.8); }
+    70% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
 .panel-item:hover {
     background: var(--color-surface-hover);
 }

@@ -503,7 +503,7 @@ export class UIController {
     navigateDate(direction) {
         this.currentDate.setDate(this.currentDate.getDate() + direction);
         this.updateDateHeader();
-        this.renderTimelineView();
+        this.renderCurrentView();
     }
     
     // Update date header

@@ -146,7 +146,7 @@ export class PanelController {
         
         // Map panel views to router views
         const viewMap = {
-            'today': 'home',
+            'today': 'timeline',
             'someday': 'board',
             'projects': 'projects',
             'completed': 'completed'
