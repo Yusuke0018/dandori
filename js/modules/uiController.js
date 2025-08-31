@@ -814,12 +814,20 @@ export class UIController {
             }
         } catch (_) {}
 
-        // アクティブビューのヘッダー高さに応じて余白を付与（重なり防止）
+        // まず、以前の補正をリセット
+        document.querySelectorAll('.view-container').forEach(vc => {
+            vc.style.paddingTop = '';
+            const hdr = vc.querySelector('.date-header');
+            if (hdr && hdr.nextElementSibling) {
+                hdr.nextElementSibling.style.marginTop = '';
+            }
+        });
+
+        // アクティブビューのヘッダー高さに応じて、ヘッダー直下の要素に余白を付与（重なり防止）
         const activeHeader = document.querySelector('.view-container.active .date-header');
-        const activeView = document.querySelector('.view-container.active');
-        if (activeHeader && activeView) {
+        if (activeHeader && activeHeader.nextElementSibling) {
             const h = activeHeader.offsetHeight || 56;
-            activeView.style.paddingTop = `${h + 8}px`;
+            activeHeader.nextElementSibling.style.marginTop = `${h + 8}px`;
         }
     }
     
