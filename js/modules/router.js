@@ -18,8 +18,8 @@ export class Router {
     }
     
     navigateTo(view, pushState = true) {
-        // Valid views
-        const validViews = ['home', 'timeline', 'calendar', 'board', 'projects', 'completed', 'settings'];
+        // Valid views（homeは廃止）
+        const validViews = ['timeline', 'calendar', 'board', 'projects', 'completed', 'settings'];
         
         if (!validViews.includes(view)) {
             view = 'home';
@@ -38,13 +38,13 @@ export class Router {
     getInitialView() {
         // Check URL hash
         const hash = window.location.hash.slice(1);
-        const validViews = ['home', 'timeline', 'calendar', 'board', 'projects', 'completed', 'settings'];
+        const validViews = ['timeline', 'calendar', 'board', 'projects', 'completed', 'settings'];
         
         if (validViews.includes(hash)) {
             return hash;
         }
         
-        // Use saved default view if available
+        // Use saved default view if available（homeは無効扱い）
         try {
             const pref = this.uiController?.taskManager?.data?.settings?.defaultView;
             if (validViews.includes(pref)) return pref;

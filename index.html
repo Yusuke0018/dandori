@@ -70,15 +70,7 @@
 
         <!-- Main Content Area -->
         <main class="app-main">
-            <!-- Home View (Today's tasks as cards) -->
-            <div id="home-view" class="view-container">
-                <div class="home-section">
-                    <h2 class="view-title">今日やること</h2>
-                    <div class="home-list">
-                        <!-- Today tasks as cards will be rendered here -->
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Timeline View -->
             <div id="timeline-view" class="view-container">
@@ -167,7 +159,6 @@
                     <label class="settings-row">
                         <span>起動時の表示</span>
                         <select id="setting-default-view">
-                            <option value="home">ホーム</option>
                             <option value="timeline">今日（タイムライン）</option>
                             <option value="board">いつかやる</option>
                             <option value="projects">プロジェクト</option>
@@ -288,7 +279,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          const v = 'v7';
+          const v = 'v8';
           navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' }).catch(()=>{});
         });
       }

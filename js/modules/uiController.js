@@ -62,34 +62,10 @@ export class UIController {
             case 'settings':
                 this.renderSettingsView();
                 break;
-            case 'home':
             default:
-                this.renderHomeView();
+                this.renderTimelineView();
                 break;
         }
-    }
-
-    // Render home view (today's tasks as cards)
-    renderHomeView() {
-        const container = document.querySelector('.home-list');
-        if (!container) return;
-        const tasks = this.taskManager.getTasksForDate(this.currentDate);
-        container.innerHTML = '';
-        // Sort: timed first by startMin, then day tasks
-        const timed = tasks.filter(t => t.type === 'timed' && !t.done).sort((a,b)=>a.startMin-b.startMin);
-        const days = tasks.filter(t => t.type === 'day' && !t.done);
-        const ordered = [...timed, ...days];
-        ordered.forEach(task => {
-            const card = this.createTaskCard(task);
-            // Add time subtitle for timed tasks
-            if (task.type === 'timed') {
-                const subtitle = document.createElement('div');
-                subtitle.className = 'task-time-inline';
-                subtitle.textContent = `${this.taskManager.minutesToTime(task.startMin)} - ${this.taskManager.minutesToTime(task.endMin)}`;
-                card.insertBefore(subtitle, card.querySelector('.task-title'));
-            }
-            container.appendChild(card);
-        });
     }
     
     // Render timeline view
@@ -590,7 +566,7 @@ export class UIController {
         if (!carry || !defView) return;
         const s = this.taskManager.data.settings;
         carry.checked = !!s.carryOver;
-        defView.value = s.defaultView && ['home','timeline','board','projects','completed'].includes(s.defaultView)
+        defView.value = s.defaultView && ['timeline','board','projects','completed'].includes(s.defaultView)
             ? s.defaultView : 'timeline';
 
         if (!carry._bound) {

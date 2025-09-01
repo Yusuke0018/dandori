@@ -201,10 +201,12 @@ class DandoriApp {
                     // 今日（タイムライン）ではスワイプでカレンダーへ遷移
                     this.router.navigateTo('calendar');
                 } else if (cur === 'calendar') {
-                    // 月移動（左=翌月／右=前月）
-                    this.uiController.currentDate.setMonth(this.uiController.currentDate.getMonth() + (dx < 0 ? 1 : -1));
-                    this.uiController.renderCalendarView();
-                    this.uiController.updateDateHeader();
+                    // カレンダーでも左右スワイプはページ（タブ）移動
+                    const idx = views.indexOf(cur);
+                    if (idx !== -1) {
+                        const next = dx < 0 ? Math.min(idx + 1, views.length - 1) : Math.max(idx - 1, 0);
+                        if (next !== idx) this.router.navigateTo(views[next]);
+                    }
                 } else {
                     // タブ移動
                     const idx = views.indexOf(cur);
