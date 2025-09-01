@@ -277,10 +277,30 @@
     <!-- Scripts -->
     <script src="js/main.js" type="module"></script>
     <script>
+      // Service Worker登録 + 強制更新 + 旧キャッシュ削除（次回ロード時に確実反映）
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          const v = 'v8';
-          navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' }).catch(()=>{});
+        window.addEventListener('load', async () => {
+          const v = 'v9'; // bump to bust registration cache
+          try {
+            const reg = await navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' });
+            // 強制更新を試行
+            reg.update && reg.update();
+          } catch (_) {}
+
+          // 旧キャッシュの削除（現行名以外）
+          const CURRENT = 'dandori-cache-v11';
+          if ('caches' in window) {
+            try {
+              const keys = await caches.keys();
+              await Promise.all(keys.filter(k => k.startsWith('dandori-cache-') && k !== CURRENT).map(k => caches.delete(k)));
+            } catch (_) {}
+          }
+
+          // SWが切り替わったら一度だけリロード
+          let reloaded = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (reloaded) return; reloaded = true; location.reload();
+          });
         });
       }
     </script>
