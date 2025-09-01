@@ -198,8 +198,24 @@ class DandoriApp {
                 const cur = this.uiController.currentView;
                 // 文脈別のスワイプ挙動
                 if (cur === 'timeline') {
-                    // 今日（タイムライン）ではスワイプでカレンダーへ遷移
-                    this.router.navigateTo('calendar');
+                    // 今日（タイムライン）: 右→履歴、左→カレンダー
+                    if (dx > 0) {
+                        this.router.navigateTo('completed');
+                    } else {
+                        this.router.navigateTo('calendar');
+                    }
+                } else if (cur === 'completed') {
+                    // 履歴: 左→今日（タイムライン）
+                    if (dx < 0) {
+                        this.router.navigateTo('timeline');
+                    } else {
+                        // 右は通常のタブ移動（前ページ）
+                        const idx = views.indexOf(cur);
+                        if (idx !== -1) {
+                            const next = Math.max(idx - 1, 0);
+                            if (next !== idx) this.router.navigateTo(views[next]);
+                        }
+                    }
                 } else if (cur === 'calendar') {
                     // カレンダーでも左右スワイプはページ（タブ）移動
                     const idx = views.indexOf(cur);

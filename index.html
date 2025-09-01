@@ -280,7 +280,7 @@
       // Service Worker登録 + 強制更新 + 旧キャッシュ削除（次回ロード時に確実反映）
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', async () => {
-          const v = 'v9'; // bump to bust registration cache
+          const v = 'v10'; // bump to bust registration cache
           try {
             const reg = await navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' });
             // 強制更新を試行
@@ -288,7 +288,7 @@
           } catch (_) {}
 
           // 旧キャッシュの削除（現行名以外）
-          const CURRENT = 'dandori-cache-v11';
+          const CURRENT = 'dandori-cache-v12';
           if ('caches' in window) {
             try {
               const keys = await caches.keys();
