@@ -101,7 +101,7 @@ class DandoriApp {
         });
         pDelete.addEventListener('click', () => {
             const id = this.uiController.editingProjectId;
-            if (id && confirm('このプロジェクトを削除しますか？（タスクは"個人タスク"に移動）')) {
+            if (id && confirm('このプロジェクトを削除しますか？（所属タスクはプロジェクト未設定になります）')) {
                 this.taskManager.deleteProject(id);
                 this.uiController.closeProjectModal();
                 this.uiController.renderCurrentView();
@@ -198,8 +198,8 @@ class DandoriApp {
                 const cur = this.uiController.currentView;
                 // 文脈別のスワイプ挙動
                 if (cur === 'timeline') {
-                    // 日付移動（左=翌日／右=前日）
-                    this.uiController.navigateDate(dx < 0 ? 1 : -1);
+                    // 今日（タイムライン）ではスワイプでカレンダーへ遷移
+                    this.router.navigateTo('calendar');
                 } else if (cur === 'calendar') {
                     // 月移動（左=翌月／右=前月）
                     this.uiController.currentDate.setMonth(this.uiController.currentDate.getMonth() + (dx < 0 ? 1 : -1));

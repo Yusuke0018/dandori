@@ -181,7 +181,7 @@ export class UIController {
         if (task.done) card.classList.add('done');
         
         // Add project tag if exists
-        if (task.projectId && task.projectId !== 'default') {
+        if (task.projectId) {
             const project = this.taskManager.data.projects.find(p => p.id === task.projectId);
             if (project) {
                 const tag = document.createElement('span');
@@ -719,7 +719,7 @@ export class UIController {
             document.getElementById('project-name').value = project.name;
             document.getElementById('project-color').value = project.color;
             document.getElementById('project-deadline').value = project.deadline || '';
-            delBtn.hidden = project.id === 'default';
+            delBtn.hidden = false;
         } else {
             this.editingProjectId = null;
             modal.querySelector('.project-modal-title').textContent = 'プロジェクトを追加';
@@ -737,10 +737,9 @@ export class UIController {
     }
 
     confirmDeleteProject(projectId) {
-        if (projectId === 'default') { alert('既定のプロジェクトは削除できません'); return; }
         const p = this.taskManager.data.projects.find(x => x.id === projectId);
         if (!p) return;
-        if (!confirm(`プロジェクト「${p.name}」を削除しますか？\n所属タスクは「個人タスク」に移動します。`)) return;
+        if (!confirm(`プロジェクト「${p.name}」を削除しますか？\n所属タスクはプロジェクト未設定になります。`)) return;
         if (this.taskManager.deleteProject(projectId)) {
             this.renderProjectsView();
             this.showToast('削除しました');
@@ -955,22 +954,13 @@ export class UIController {
         tasks.forEach(t => {
             const row = document.createElement('div');
             row.className = 'calendar-task-item';
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.checked = !!t.done;
-            checkbox.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.taskManager.toggleTaskDone(t.id);
-                this.renderCalendarTasks(date);
-                this.updateProgressRing();
-            });
+            if (t.done) row.classList.add('done');
             const time = document.createElement('div');
             time.className = 'calendar-task-time';
             time.textContent = t.type==='timed' ? `${this.taskManager.minutesToTime(t.startMin)}` : '';
             const title = document.createElement('div');
             title.className = 'calendar-task-title';
             title.textContent = t.title;
-            row.appendChild(checkbox);
             row.appendChild(time);
             row.appendChild(title);
             // Long-press delete / click edit

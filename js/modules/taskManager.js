@@ -9,6 +9,8 @@ export class TaskManager {
     // Load data from storage
     async loadData() {
         this.data = this.storage.load();
+        // Normalize legacy "default" project -> optional project
+        this.normalizeProjects();
         this.processCarryOver();
         return this.data;
     }
@@ -25,7 +27,7 @@ export class TaskManager {
             title: taskData.title,
             type: taskData.type, // 'someday', 'day', 'timed'
             date: taskData.date || null,
-            projectId: taskData.projectId || 'default',
+            projectId: taskData.projectId || '',
             done: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -137,18 +139,30 @@ export class TaskManager {
         return project;
     }
 
-    // Delete project and reassign tasks to default
+    // Delete project and unassign tasks (no project)
     deleteProject(projectId) {
-        if (projectId === 'default') return false;
         const idx = this.data.projects.findIndex(p => p.id === projectId);
         if (idx === -1) return false;
         this.data.projects.splice(idx, 1);
-        // Reassign tasks
+        // Unassign tasks
         this.data.tasks = this.data.tasks.map(t => (
-            t.projectId === projectId ? { ...t, projectId: 'default' } : t
+            t.projectId === projectId ? { ...t, projectId: '' } : t
         ));
         this.save();
         return true;
+    }
+
+    // Normalize legacy default project and references
+    normalizeProjects() {
+        if (!this.data || !Array.isArray(this.data.projects)) return;
+        const hadDefault = this.data.projects.some(p => p.id === 'default');
+        if (hadDefault) {
+            // Remove the legacy default project
+            this.data.projects = this.data.projects.filter(p => p.id !== 'default');
+            // Unassign tasks pointing to default
+            this.data.tasks = this.data.tasks.map(t => t.projectId === 'default' ? { ...t, projectId: '' } : t);
+            this.save();
+        }
     }
     
     // Get all projects with progress

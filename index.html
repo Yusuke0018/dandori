@@ -288,7 +288,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          const v = 'v6';
+          const v = 'v7';
           navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' }).catch(()=>{});
         });
       }

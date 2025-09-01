@@ -59,14 +59,7 @@ export class StorageService {
     getDefaultData() {
         return {
             schemaVersion: this.SCHEMA_VERSION,
-            projects: [
-                {
-                    id: 'default',
-                    name: '個人タスク',
-                    color: 'blue',
-                    createdAt: new Date().toISOString()
-                }
-            ],
+            projects: [],
             tasks: [],
             settings: {
                 carryOver: true,

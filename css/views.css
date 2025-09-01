@@ -377,6 +377,31 @@
 #calendar-view .cal-day.selected { background: var(--color-primary); color: var(--color-text-inverse); }
 #calendar-view .calendar-tasks { background: var(--color-surface); border-radius: var(--radius-md); box-shadow: var(--shadow-card); padding: var(--spacing-md); }
 
+/* Full calendar tasks readability */
+#calendar-view .calendar-task-item {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--color-border-light);
+}
+#calendar-view .calendar-task-item:last-child { border-bottom: none; }
+#calendar-view .calendar-task-time {
+    color: var(--color-text-tertiary);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+#calendar-view .calendar-task-title {
+    font-size: 1rem;
+    line-height: 1.6;
+    word-break: break-word;
+}
+#calendar-view .calendar-task-item.done .calendar-task-title {
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
 /* Full calendar dots for visibility */
 #calendar-view .cal-day.has-tasks::after {
     content: '';
