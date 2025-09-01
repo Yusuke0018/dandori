@@ -280,21 +280,31 @@
       // Service Worker登録 + 強制更新 + 旧キャッシュ削除（次回ロード時に確実反映）
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', async () => {
-          const v = 'v10'; // bump to bust registration cache
+          const v = 'v11'; // bump to bust registration cache
           try {
             const reg = await navigator.serviceWorker.register(`./sw.js?${v}`, { scope: './' });
             // 強制更新を試行
             reg.update && reg.update();
+            // 待機中があれば即時有効化
+            if (reg.waiting) {
+              reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
           } catch (_) {}
 
           // 旧キャッシュの削除（現行名以外）
-          const CURRENT = 'dandori-cache-v12';
+          const CURRENT = 'dandori-cache-v13';
           if ('caches' in window) {
             try {
               const keys = await caches.keys();
               await Promise.all(keys.filter(k => k.startsWith('dandori-cache-') && k !== CURRENT).map(k => caches.delete(k)));
             } catch (_) {}
           }
+
+          // 稼働中SWへキャッシュパージを要求
+          try {
+            const reg = await navigator.serviceWorker.ready;
+            reg.active && reg.active.postMessage({ type: 'PURGE_CACHES' });
+          } catch (_) {}
 
           // SWが切り替わったら一度だけリロード
           let reloaded = false;
