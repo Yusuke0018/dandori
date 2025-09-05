@@ -52,7 +52,8 @@
     border-radius: 50%;
     box-shadow: 0 10px 24px rgba(0,0,0,0.18);
     transition: transform var(--transition-base), box-shadow var(--transition-base);
-    z-index: var(--z-tooltip);
+    /* モーダルより下に配置して重なりを回避 */
+    z-index: var(--z-sticky);
 }
 
 .btn-add:hover {

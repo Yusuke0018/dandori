@@ -88,10 +88,16 @@ export class UIController {
         const container = document.querySelector('.day-tasks-list');
         container.innerHTML = '';
         if (!tasks || tasks.length === 0) {
-            const empty = document.createElement('div');
-            empty.className = 'empty-hint';
-            empty.textContent = 'この日に予定はありません。右下の＋で追加できます。';
-            container.appendChild(empty);
+            // 同日に時間指定タスクがある場合は空表示（メッセージ非表示）
+            const hasTimed = this.taskManager
+                .getTasksForDate(this.currentDate)
+                .some(t => t.type === 'timed');
+            if (!hasTimed) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-hint';
+                empty.textContent = 'この日に予定はありません。右下の＋で追加できます。';
+                container.appendChild(empty);
+            }
             return;
         }
 
@@ -434,6 +440,22 @@ export class UIController {
         const card = document.createElement('div');
         card.className = 'project-card';
         
+        // 期限までの日数表示用テキスト
+        let deadlineInfo = '';
+        let deadlineRemainText = '';
+        if (project.deadline) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const d = new Date(project.deadline);
+            d.setHours(0,0,0,0);
+            const diffDays = Math.floor((d - today) / 86400000);
+            const remainText = diffDays > 0
+                ? `あと${diffDays}日`
+                : (diffDays === 0 ? '今日が締切' : `期限超過${Math.abs(diffDays)}日`);
+            deadlineRemainText = remainText;
+            deadlineInfo = `<div class=\"project-deadline\">期限: ${project.deadline}（${remainText}）</div>`;
+        }
+
         card.innerHTML = `
             <div class="project-header">
                 <div class="project-info">
@@ -456,6 +478,13 @@ export class UIController {
                 </div>
             </div>
         `;
+        // 期限の残り日数を括弧付きで追記
+        if (project.deadline && deadlineRemainText) {
+            const dlEl = card.querySelector('.project-deadline');
+            if (dlEl) {
+                dlEl.textContent = `期限: ${project.deadline}（${deadlineRemainText}）`;
+            }
+        }
         // Long-press delete / click edit
         let lpTimer = null; let lpTriggered = false; const LP_MS = 600;
         card.addEventListener('pointerdown', () => { lpTriggered=false; clearTimeout(lpTimer); lpTimer = setTimeout(()=>{ lpTriggered=true; this.confirmDeleteProject(project.id); }, LP_MS); });
