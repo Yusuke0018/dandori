@@ -131,6 +131,12 @@ export class DragDropController {
         this.draggedTask = this.taskManager.data.tasks.find(t => t.id === taskId);
         
         if (!this.draggedTask) return;
+        // タイムライン上の時間指定タスクはドラッグ移動不可
+        if (this.draggedTask.type === 'timed' && element.closest('.timeline-grid')) {
+            this.draggedElement = null;
+            this.draggedTask = null;
+            return;
+        }
         
         // Create ghost element
         this.ghost = element.cloneNode(true);
@@ -276,8 +282,8 @@ export class DragDropController {
         const updates = {
             type: 'timed',
             date: this.taskManager.formatDate(this.uiController.currentDate),
-            startMin: snapMinutes,
-            endMin: Math.min(snapMinutes + 60, 1439) // Default 1 hour duration
+            startMin: snapMinutes
+            // endMinは終了未設定を尊重して付与しない
         };
         
         // Check for conflicts

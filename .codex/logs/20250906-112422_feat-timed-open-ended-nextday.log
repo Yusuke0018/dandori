@@ -1,0 +1,16 @@
+timestamp: 20250906-112422
+branch: main
+commit: 979aca2
+summary:
+979aca2 feat: 時間指定の終了任意化と翌日またぎ対応\n\n- 終了時間を任意化（開始のみ必須）\n- 翌日またぎ（終了<開始）を許容し表示対応\n- タイムライン: 終了なしは最小表示、翌日またぎは当日終端まで\n- 編集モーダル: 終了未設定は空欄表示\n\nchore: SWキャッシュ更新\n\n- sw.js の CACHE_NAME を v14 に\n- index.html の SW登録バージョン/現在キャッシュ名を更新\n
+ index.html                 |  4 ++--
+ js/main.js                 | 14 +++++++-------
+ js/modules/taskManager.js  | 18 ++++++++++++++----
+ js/modules/uiController.js | 28 ++++++++++++++++++++++++----
+ sw.js                      |  2 +-
+ 5 files changed, 48 insertions(+), 18 deletions(-)
+secret_scan: none-detected
+lint: skipped (no config)
+tests: none
+push: success (origin/main)
+next: Reload the app; SW v14 will purge caches and take control (auto).

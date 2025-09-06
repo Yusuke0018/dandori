@@ -266,13 +266,10 @@ export class UIController {
             }
             const dx = (e.changedTouches[0].clientX - startX) || 0;
             if (dx > 80) {
-                // Right swipe: delete with undo
-                card.style.opacity = '0.3';
-                this.deleteTaskWithUndo(task.id, () => {
-                    // On actual delete finalize, fade out
-                    card.style.opacity = '';
-                    this.renderCurrentView();
-                });
+                // 右スワイプ: 即時削除（アンドゥなし）
+                this.taskManager.deleteTask(task.id);
+                this.renderCurrentView();
+                this.updateProgressRing();
             } else if (dx < -80) {
                 // Left swipe: edit
                 this.openTaskModal(task);
@@ -369,7 +366,10 @@ export class UIController {
         const t = this.taskManager.data.tasks.find(x => x.id === taskId);
         if (!t) return;
         if (!confirm('このタスクを削除しますか？')) return;
-        this.deleteTaskWithUndo(taskId);
+        // 即時削除（アンドゥ・トーストなし）
+        this.taskManager.deleteTask(taskId);
+        this.renderCurrentView();
+        this.updateProgressRing();
     }
     
     // Create timeline task element
