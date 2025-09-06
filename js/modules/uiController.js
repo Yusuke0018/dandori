@@ -379,10 +379,19 @@ export class UIController {
         
         // Calculate position and height
         const top = (task.startMin / 1440) * 100;
-        const height = ((task.endMin - task.startMin) / 1440) * 100;
+        let heightPct;
+        if (typeof task.endMin !== 'number') {
+            // 終了未設定は最小表示（30分）
+            heightPct = (30 / 1440) * 100;
+        } else if (task.endMin >= task.startMin) {
+            heightPct = ((task.endMin - task.startMin) / 1440) * 100;
+        } else {
+            // 翌日まで → 当日終端までを描画
+            heightPct = ((1440 - task.startMin) / 1440) * 100;
+        }
         
         element.style.top = `${top}%`;
-        element.style.height = `${height}%`;
+        element.style.height = `${heightPct}%`;
         
         if (column === 1) {
             element.classList.add('overlapping');
@@ -391,7 +400,13 @@ export class UIController {
         // Add time info
         const timeInfo = document.createElement('div');
         timeInfo.className = 'task-time';
-        timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)} - ${this.taskManager.minutesToTime(task.endMin)}`;
+        if (typeof task.endMin !== 'number') {
+            timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)}`;
+        } else if (task.endMin < task.startMin) {
+            timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)} - 翌日${this.taskManager.minutesToTime(task.endMin)}`;
+        } else {
+            timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)} - ${this.taskManager.minutesToTime(task.endMin)}`;
+        }
         element.insertBefore(timeInfo, element.firstChild);
         
         return element;
@@ -688,7 +703,12 @@ export class UIController {
             
             if (task.type === 'timed') {
                 document.getElementById('task-start').value = this.taskManager.minutesToTime(task.startMin);
-                document.getElementById('task-end').value = this.taskManager.minutesToTime(task.endMin);
+                const endInput = document.getElementById('task-end');
+                if (typeof task.endMin === 'number') {
+                    endInput.value = this.taskManager.minutesToTime(task.endMin);
+                } else {
+                    endInput.value = '';
+                }
             }
             
             document.getElementById('task-project').value = task.projectId || '';

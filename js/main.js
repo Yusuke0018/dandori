@@ -160,15 +160,15 @@ class DandoriApp {
         }
         
         if (data.type === 'timed') {
-            if (!data.date || !data.startTime || !data.endTime) {
-                alert('日付と時間を設定してください');
+            // 終了時間は任意。開始時間は必須。
+            if (!data.date || !data.startTime) {
+                alert('日付と開始時刻を設定してください');
                 return false;
             }
-            
-            if (data.startTime >= data.endTime) {
-                alert('終了時刻は開始時刻より後に設定してください');
-                return false;
-            }
+            // 終了時間がある場合のみ関係性を確認。
+            // 終了が開始より前でも「翌日まで」を意味するためエラーにしない。
+            // 例: 23:30 -> 01:00（翌日）
+            // 同時刻（0分）も許容。
         }
         
         return true;

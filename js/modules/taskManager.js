@@ -36,7 +36,10 @@ export class TaskManager {
         // Add time information for timed tasks
         if (taskData.type === 'timed') {
             task.startMin = this.timeToMinutes(taskData.startTime);
-            task.endMin = this.timeToMinutes(taskData.endTime);
+            // 終了時間は任意
+            if (taskData.endTime) {
+                task.endMin = this.timeToMinutes(taskData.endTime);
+            }
         }
         
         this.data.tasks.push(task);
@@ -222,11 +225,18 @@ export class TaskManager {
     
     // Check if two timed tasks have time conflict
     hasTimeConflict(task1, task2) {
-        if (!task1.startMin || !task1.endMin || !task2.startMin || !task2.endMin) {
+        // どちらかに開始がなければ判定不能（基本なしとする）
+        if (typeof task1.startMin !== 'number' || typeof task2.startMin !== 'number') {
             return false;
         }
-        
-        return !(task1.endMin <= task2.startMin || task1.startMin >= task2.endMin);
+        // 終了未設定は衝突なしとして扱う（タイムライン追加時の警告を抑制）
+        if (typeof task1.endMin !== 'number' || typeof task2.endMin !== 'number') {
+            return false;
+        }
+        // 翌日またぎ（end < start）は当日終端（1440分）までと解釈
+        const end1 = task1.endMin >= task1.startMin ? task1.endMin : 1440;
+        const end2 = task2.endMin >= task2.startMin ? task2.endMin : 1440;
+        return !(end1 <= task2.startMin || task1.startMin >= end2);
     }
     
     // Convert time string to minutes
