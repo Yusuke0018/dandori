@@ -407,7 +407,7 @@ export class UIController {
         const timeInfo = document.createElement('div');
         timeInfo.className = 'task-time';
         if (typeof task.endMin !== 'number') {
-            timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)}`;
+            timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)} 〜`;
         } else if (task.endMin < task.startMin) {
             timeInfo.textContent = `${this.taskManager.minutesToTime(task.startMin)} - 翌日${this.taskManager.minutesToTime(task.endMin)}`;
         } else {

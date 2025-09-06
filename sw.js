@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dandori-cache-v15';
+const CACHE_NAME = 'dandori-cache-v16';
 const ASSETS = [
   '/dandori/',
   '/dandori/index.html',
