@@ -143,15 +143,21 @@ export class UIController {
     // Calculate column positions for overlapping tasks
     calculateColumns(tasks) {
         const columns = new Array(tasks.length).fill(0);
-        
+        const norm = (t) => {
+            const s = t.startMin ?? 0;
+            // 終了未設定は「開始+60分」として重なり判定に用いる
+            // 翌日またぎ（end<start）は当日終端まで
+            const e = (typeof t.endMin !== 'number') ? (s + 60) : (t.endMin < s ? 1440 : t.endMin);
+            return { s, e };
+        };
         for (let i = 0; i < tasks.length; i++) {
+            const a = norm(tasks[i]);
             for (let j = i + 1; j < tasks.length; j++) {
-                if (this.taskManager.hasTimeConflict(tasks[i], tasks[j])) {
-                    columns[j] = 1;
-                }
+                const b = norm(tasks[j]);
+                const conflict = !(a.e <= b.s || a.s >= b.e);
+                if (conflict) columns[j] = 1;
             }
         }
-        
         return columns;
     }
     
@@ -381,8 +387,8 @@ export class UIController {
         const top = (task.startMin / 1440) * 100;
         let heightPct;
         if (typeof task.endMin !== 'number') {
-            // 終了未設定は最小表示（30分）
-            heightPct = (30 / 1440) * 100;
+            // 終了未設定は1時間表示
+            heightPct = (60 / 1440) * 100;
         } else if (task.endMin >= task.startMin) {
             heightPct = ((task.endMin - task.startMin) / 1440) * 100;
         } else {
